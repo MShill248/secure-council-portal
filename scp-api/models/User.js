@@ -18,6 +18,15 @@ class User {
 
     }
 
+    static async getAll() {
+        const response = await db.query("SELECT * FROM users;")
+        if (response.rows.length === 0) {
+            throw Error("No users available")
+        }
+        return response.rows.map((user) => new User(user))
+    }
+
+
     static async getOneById(id) {
         const response = await db.query("SELECT * FROM users WHERE user_id = $1", [id]);
         if (response.rows.length != 1) {
@@ -38,6 +47,9 @@ class User {
         const {username, first_name, last_name, email, password, dob, address, postcode, borough, phone_number, user_role} = data;
         let response = await db.query("INSERT INTO users (username, first_name, last_name, email, password, dob, address, postcode, borough, phone_number, user_role) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING user_id;",
             [username, first_name, last_name, email, password, dob, address, postcode, borough, phone_number, user_role]);
+        if (response.rows.length != 1) {
+            throw new Error("Unable to create user.");
+        }
         const newId = response.rows[0].user_id;
         const newUser = await User.getOneById(newId);
         return newUser;

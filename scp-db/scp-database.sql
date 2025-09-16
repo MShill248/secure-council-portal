@@ -2,19 +2,29 @@ DROP TABLE IF EXISTS users;
 
 CREATE TABLE users (
     user_id INT GENERATED ALWAYS AS IDENTITY,
-    username TEXT NOT NULL UNIQUE,
-    first_name TEXT NOT NULL VARCHAR(50),
-    last_name TEXT NOT NULL VARCHAR(50),
-    email TEXT NOT NULL UNIQUE,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
     password TEXT NOT NULL,
     dob DATE NOT NULL,
     address TEXT NOT NULL,
-    postcode TEXT NOT NULL VARCHAR(8),
-    borough TEXT NOT NULL VARCHAR(20),
-    phone_number TEXT NOT NULL VARCHAR(15),
-    user_role TEXT NOT NULL VARCHAR(20),
+    postcode VARCHAR(8) NOT NULL,
+    borough VARCHAR(20) NOT NULL,
+    phone_number VARCHAR(15) NOT NULL,
+    user_role VARCHAR(20) NOT NULL,
     PRIMARY KEY (user_id)
 );
+
+INSERT INTO users (username, first_name, last_name, email, password, dob, address, postcode, borough, phone_number, user_role) VALUES
+('alicej', 'Alice', 'Johnson', 'alice.johnson@example.com', 'password123', '1990-05-12', '12 Oak Street', 'E1 4AB', 'Greenwich', '07123456789', 'resident'),
+('bobsmith', 'Bob', 'Smith', 'bob.smith@example.com', 'password123', '1985-08-22', '34 Pine Avenue', 'E2 5CD', 'Hackney', '07234567890', 'resident'),
+('charlieb', 'Charlie', 'Brown', 'charlie.brown@example.com', 'password123', '1992-11-03', '56 Maple Road', 'E3 6EF', 'Tower Hamlets', '07345678901', 'resident'),
+('dianaw', 'Diana', 'Williams', 'diana.williams@example.com', 'password123', '1988-02-17', '78 Birch Lane', 'E4 7GH', 'Lewisham', '07456789012', 'resident'),
+('edwardk', 'Edward', 'King', 'edward.king@example.com', 'password123', '1995-09-30', '90 Cedar Street', 'E5 8IJ', 'Southwark', '07567890123', 'resident'),
+('council1', 'John', 'Doe', 'john.doe@council.gov', 'password123', '1975-04-10', 'Council House, Main Street', 'E6 9KL', 'Hackney', '07678901234', 'council'),
+('council2', 'Jane', 'Smith', 'jane.smith@council.gov', 'password123', '1980-06-15', 'Council House, Main Street', 'E7 1MN', 'Greenwich', '07789012345', 'council');
+
 
 DROP TABLE IF EXISTS requests;
 
