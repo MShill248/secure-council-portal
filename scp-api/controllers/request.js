@@ -55,10 +55,10 @@ async function getByPriority(req, res) {
 
 async function getByRecent(req, res) {
     try {
-        const requests = await Request.getByRecent();
-        res.status(200).json(requests);
+        const requests = await Request.getByRecent()
+        res.status(200).json(requests)
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ error: err.message })
     }
 }
 

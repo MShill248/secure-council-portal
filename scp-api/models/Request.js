@@ -3,13 +3,13 @@ const db = require('../database/connect');
 class Request {
 
     constructor({ request_id, user_id, title, description, status, created_at, updated_at }) {
-        this.request_id = request_id;
-        this.user_id = user_id;
-        this.title = title;
-        this.description = description;
-        this.status = status;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
+        this.request_id = request_id,
+        this.user_id = user_id,
+        this.title = title,
+        this.description = description,
+        this.status = status,
+        this.created_at = created_at,
+        this.updated_at = updated_at
     }
 
     static async getAll() {
@@ -79,7 +79,7 @@ class Request {
         let response = await db.query("INSERT INTO requests (user_id, title, description, status, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;",
             [user_id, title, description, status, created_at, updated_at])
         if (response.rows.length != 1) {
-            throw new Error("Unable to create request.");
+            throw new Error("Unable to create request.")
         }
         return new Request(response.rows[0])
     }
