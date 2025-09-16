@@ -10,7 +10,7 @@ app.use(express.json())
 app.use(cors())
 app.use(logger)
 
-// app.use('/auth', authRouter)
+app.use('/auth', authRouter)
 app.use('/user', userRouter)
 
 app.get("/", (req, res) => {

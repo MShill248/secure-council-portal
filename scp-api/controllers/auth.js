@@ -8,6 +8,7 @@ const otpStore = {};
 async function register(req, res) {
     try {
         const data = req.body;
+        console.log(data);
         const salt = await bcrypt.genSalt(parseInt(process.env.BCRYPT_SALT_ROUNDS));
         data["password"] = await bcrypt.hash(data.password, salt);
         const result = await User.create(data);
