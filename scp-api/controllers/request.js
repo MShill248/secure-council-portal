@@ -1,4 +1,6 @@
 const Request = require('../models/Request')
+const User = require('../models/User')
+const jwt = require('jsonwebtoken')
 
 async function index(req, res) {
     try {
@@ -75,15 +77,18 @@ async function getByRecent(req, res) {
 
 async function create(req, res) {
     try {
-        const { title, description, status, category, priority } = req.body
-        const user_id = req.user.user_id // should get user_id from auth middleware to pass to model
+        const { title, description, status, category, priority/*, token*/ } = req.body
+        // const payload = jwt.verify(token, process.env.SECRET_TOKEN)
+        // const username = payload.username 
+        // const user = await User.getOneByUsername(username)
+        // const user_id = user.user_id
         const newRequest = await Request.create({
             user_id,
             title,
             description,
             status,
             category, 
-            priority,
+            priority
         })
         res.status(201).json(newRequest);
     } catch (err) {
