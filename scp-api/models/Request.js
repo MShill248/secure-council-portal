@@ -2,7 +2,7 @@ const db = require('../database/connect');
 
 class Request {
 
-    constructor({ request_id, user_id, title, description, status, category, priority, created_at, updated_at }) {
+    constructor({ request_id, user_id, title, description, status, category, priority, type, created_at, updated_at }) {
         this.request_id = request_id,
         this.user_id = user_id,
         this.title = title,
@@ -10,6 +10,7 @@ class Request {
         this.status = status,
         this.category = category,
         this.priority = priority,
+        this.type = type,
         this.created_at = created_at,
         this.updated_at = updated_at
     }
@@ -79,15 +80,15 @@ class Request {
     }
 
     static async create(data) {
-        const { user_id, title, description, status, category, priority } = data
+        const { user_id, title, description, status, category, priority, type } = data
         const existingUser = await db.query("SELECT user_id FROM users WHERE user_id = $1;", [user_id])
 
         if (existingUser.rows.length === 0) {
             throw Error("A user with this ID does not exist")
         }
 
-        let response = await db.query("INSERT INTO requests (user_id, title, description, status, category, priority) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;",
-            [user_id, title, description, status, category, priority])
+        let response = await db.query("INSERT INTO requests (user_id, title, description, status, category, priority, type) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;",
+            [user_id, title, description, status, category, priority, type])
         if (response.rows.length != 1) {
             throw new Error("Unable to create request.")
         }
@@ -95,10 +96,10 @@ class Request {
     }
 
     async update(data){
-        const { title, description, status, category, priority, updated_at } = data
+        const { title, description, status, category, priority, type, updated_at } = data
 
-        const response = await db.query("UPDATE requests SET title = COALESCE($1, title), description = COALESCE($2, description), status = COALESCE($3, status), category = COALESCE($4, category), priority = COALESCE($5, priority), updated_at = COALESCE($6, updated_at) WHERE request_id = $7 RETURNING *;",
-            [title, description, status, category, priority, updated_at, this.request_id])
+        const response = await db.query("UPDATE requests SET title = COALESCE($1, title), description = COALESCE($2, description), status = COALESCE($3, status), category = COALESCE($4, category), priority = COALESCE($5, priority), type = COALESCE($6, type), updated_at = COALESCE($7, updated_at) WHERE request_id = $8 RETURNING *;",
+            [title, description, status, category, priority, type, updated_at, this.request_id])
         if (response.rows.length !== 1) {
             throw Error("Unable to update request")
         }
