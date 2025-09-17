@@ -56,9 +56,9 @@ class User {
     }
 
     async update(data){
-        const { username, first_name, last_name, email, password, dob, address, postcode, borough, phone_number } = data
+        const { user_id, user_role, username, first_name, last_name, email, password, dob, address, postcode, borough, phone_number } = data
 
-        const response = await db.query("UPDATE users SET username = COALESCE($1, username) first_name = COALESCE($2, first_name), last_name = COALESCE($3, last_name), email = COALESCE($4, email), password = COALESCE($5, passwordhash), dob = COALESCE($6, dob), address = COALESCE($7, address), postcode = COALESCE($8, postcode), borough = COALESCE($9, borough), phone_number = COALESCE($10, phone_number) WHERE user_id = $11 RETURNING *;", [username, first_name, last_name, email, password, dob, address, postcode, borough, phone_number, this.user_id])
+        const response = await db.query("UPDATE users SET username = COALESCE($1, username), first_name = COALESCE($2, first_name), last_name = COALESCE($3, last_name), email = COALESCE($4, email), password = COALESCE($5, password), dob = COALESCE($6, dob), address = COALESCE($7, address), postcode = COALESCE($8, postcode), borough = COALESCE($9, borough), phone_number = COALESCE($10, phone_number), user_role = COALESCE($11, user_role) WHERE user_id = $12 RETURNING *;", [username, first_name, last_name, email, password, dob, address, postcode, borough, phone_number, user_role, this.user_id])
         if (response.rows.length !== 1) {
             throw Error("Unable to update user")
         }
