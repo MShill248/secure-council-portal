@@ -1,11 +1,19 @@
 const Request = require('../models/Request')
 const User = require('../models/User')
 const jwt = require('jsonwebtoken')
+const crypto = require('crypto');
 
 async function index(req, res) {
     try {
         const requests = await Request.getAll()
         res.status(200).json(requests)
+        const crypto = require('crypto');
+
+// Create a SHA-256 hash of a string
+const hash = crypto.createHash('sha256')
+  .update('Hello, Node.js!')
+  .digest('hex');
+console.log('SHA-256 Hash:', hash);
     } catch (err) {
         console.log(err);
         res.status(500).json({ error: err.message })
@@ -77,7 +85,7 @@ async function getByRecent(req, res) {
 
 async function create(req, res) {
     try {
-        const { title, description, status, category, priority, token} = req.body
+        const { title, description, status, category, priority, type, token} = req.body
         const payload = jwt.verify(token, process.env.SECRET_TOKEN)
         const username = payload.username 
         const user = await User.getOneByUsername(username)
@@ -88,7 +96,8 @@ async function create(req, res) {
             description,
             status,
             category, 
-            priority
+            priority,
+            type
         })
         console.log("hit");
         res.status(201).json(newRequest);
@@ -106,6 +115,7 @@ async function update(req, res) {
         req.body.status ||= request.status
         req.body.category ||= request.category
         req.body.priority ||= request.priority
+        req.body.type ||= request.type
         const data = req.body
         data.updated_at = new Date()
         const result = await request.update(data)
