@@ -34,11 +34,24 @@ CREATE TABLE requests (
     title TEXT NOT NULL,
     description TEXT NOT NULL,
     status TEXT NOT NULL,
+    category TEXT NOT NULL CHECK (category IN ('incident', 'service')),
+    priority INT NOT NULL CHECK (priority IN (1, 2, 3)),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     PRIMARY KEY (request_id)
 );
+
+INSERT INTO requests (user_id, title, description, status, category, priority, created_at, updated_at)
+VALUES
+(1, 'Streetlight not working', 'The streetlight outside my house on Elm Street has been out for two weeks.', 'open', 'incident', 2, '2025-09-01 10:15:00', '2025-09-01 10:15:00'),
+(2, 'Pothole repair', 'Large pothole on the corner of Maple Avenue and 3rd Street is causing traffic issues.', 'in_progress', 'incident', 1, '2025-09-02 14:40:00', '2025-09-05 09:20:00'),
+(3, 'Missed waste collection', 'Our recycling bins were not emptied last Friday on Oak Drive.', 'resolved', 'service', 3, '2025-09-03 08:05:00', '2025-09-04 16:30:00'),
+(4, 'Noise complaint', 'There is excessive noise from construction past 10 PM near Pine Street.', 'open', 'incident', 2, '2025-09-04 21:45:00', '2025-09-04 21:45:00'),
+(5, 'Graffiti removal', 'Graffiti spotted on the wall of the community center car park.', 'in_progress', 'service', 3, '2025-09-05 11:00:00', '2025-09-07 15:10:00'),
+(6, 'Damaged playground equipment', 'The swings in Riverside Park are broken and unsafe for children.', 'open', 'incident', 1, '2025-09-06 13:20:00', '2025-09-06 13:20:00'),
+(7, 'Illegal dumping', 'Someone has dumped old furniture behind the library.', 'resolved', 'incident', 2, '2025-09-07 17:55:00', '2025-09-08 10:45:00');
+
 
 DROP TABLE IF EXISTS messages;
 
@@ -50,6 +63,6 @@ CREATE TABLE messages (
     content TEXT NOT NULL,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (request_id) REFERENCES requests(request_id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     PRIMARY KEY (message_id)
 );
