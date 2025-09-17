@@ -1,10 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const loginForm = document.querySelector('.loginForm');
+  const loginForm = document.querySelector('#loginForm');
 
   loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const formData = new FormData(loginForm);
-
     const options = {
       method: "POST",
       headers: {
@@ -24,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
-      const response = await fetch('http://localhost:3000/user/login', options);
+      const response = await fetch('http://localhost:3000/auth/login', options);
       const data = await response.json();
       console.log("Login response:", data);
 
