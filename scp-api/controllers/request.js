@@ -1,19 +1,11 @@
 const Request = require('../models/Request')
 const User = require('../models/User')
 const jwt = require('jsonwebtoken')
-const crypto = require('crypto');
 
 async function index(req, res) {
     try {
         const requests = await Request.getAll()
         res.status(200).json(requests)
-        const crypto = require('crypto');
-
-// Create a SHA-256 hash of a string
-const hash = crypto.createHash('sha256')
-  .update('Hello, Node.js!')
-  .digest('hex');
-console.log('SHA-256 Hash:', hash);
     } catch (err) {
         console.log(err);
         res.status(500).json({ error: err.message })
