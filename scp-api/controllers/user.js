@@ -35,8 +35,19 @@ async function create(req, res) {
 async function update(req, res) {
     try {
         const id = parseInt(req.params.id)
-        const data = req.body
         const user = await User.getOneById(id)
+        req.body.username ||= user.username
+        req.body.first_name ||= user.first_name
+        req.body.last_name ||= user.last_name
+        req.body.email ||= user.email
+        req.body.password ||= user.password
+        req.body.dob ||= user.address
+        req.body.postcode ||= user.postcode
+        req.body.borough ||= user.borough
+        req.body.phone_number ||= user.phone_number
+        req.body.user_role ||= user.user_role
+        console.log(req.body);
+        const data = req.body
         const result = await user.update(data)
         res.status(200).json(result)
     } catch (err) {
