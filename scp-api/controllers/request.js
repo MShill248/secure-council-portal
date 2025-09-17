@@ -53,6 +53,17 @@ async function getByPriority(req, res) {
     }
 }
 
+async function getByCategory(req, res) {
+    try {
+        const category = req.params.category
+        const requests = await Request.getByCategory(category)
+        res.status(200).json(requests)
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: err.message })
+    }
+}
+
 async function getByRecent(req, res) {
     try {
         const requests = await Request.getByRecent()
@@ -64,15 +75,15 @@ async function getByRecent(req, res) {
 
 async function create(req, res) {
     try {
-        const { title, description, status } = req.body
+        const { title, description, status, category, priority } = req.body
         const user_id = req.user.user_id // should get user_id from auth middleware to pass to model
         const newRequest = await Request.create({
             user_id,
             title,
             description,
             status,
-            created_at: new Date(),
-            updated_at: new Date(),
+            category, 
+            priority,
         })
         res.status(201).json(newRequest);
     } catch (err) {
@@ -110,6 +121,7 @@ module.exports = {
     getByUserId,
     getByStatus,
     getByPriority,
+    getByCategory,
     getByRecent,
     create,
     update,
