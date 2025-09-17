@@ -77,11 +77,11 @@ async function getByRecent(req, res) {
 
 async function create(req, res) {
     try {
-        const { title, description, status, category, priority/*, token*/ } = req.body
-        // const payload = jwt.verify(token, process.env.SECRET_TOKEN)
-        // const username = payload.username 
-        // const user = await User.getOneByUsername(username)
-        // const user_id = user.user_id
+        const { title, description, status, category, priority, token} = req.body
+        const payload = jwt.verify(token, process.env.SECRET_TOKEN)
+        const username = payload.username 
+        const user = await User.getOneByUsername(username)
+        const user_id = user.user_id
         const newRequest = await Request.create({
             user_id,
             title,
@@ -90,6 +90,7 @@ async function create(req, res) {
             category, 
             priority
         })
+        console.log("hit");
         res.status(201).json(newRequest);
     } catch (err) {
         res.status(400).json({ "error": err.message })
