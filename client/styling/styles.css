@@ -1,0 +1,17 @@
+#offcanvasAccount,
+#offcanvasMainMenu {
+  --bs-offcanvas-width: 280px;
+}
+
+.offcanvas[data-bs-theme="dark"] .list-group-item {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: .75rem;
+  margin-bottom: .5rem;
+}
+
+.offcanvas[data-bs-theme="dark"] .list-group-item:hover,
+.offcanvas[data-bs-theme="dark"] .list-group-item:focus {
+  background-color: rgba(255, 255, 255, 0.10);
+}
