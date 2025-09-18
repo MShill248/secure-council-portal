@@ -7,7 +7,7 @@ const userRouter = Router()
 
 // userRouter.get('/', authenticator, userController.index)
 userRouter.get('/', userController.index)
-userRouter.get('/:id', userController.showId)
+userRouter.get('/account', authenticator, userController.showId)
 userRouter.post("/", userController.create)
 userRouter.patch("/:id", userController.update)
 userRouter.delete("/:id", userController.destroy)
