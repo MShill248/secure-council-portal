@@ -77,9 +77,8 @@ async function getByRecent(req, res) {
 
 async function create(req, res) {
     try {
-        const { title, description, status, category, priority, type, token} = req.body
-        const payload = jwt.verify(token, process.env.SECRET_TOKEN)
-        const username = payload.username 
+        const { title, description, status, category, priority, type } = req.body
+        const username = req.username 
         const user = await User.getOneByUsername(username)
         const user_id = user.user_id
         const newRequest = await Request.create({

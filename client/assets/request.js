@@ -19,8 +19,7 @@ async function registerEvent(e){
           status: "pending",
           category: form.get('requestCategory'),
           priority: "1",
-          type: form.get('requestType'),
-          token: localStorage.getItem('token')
+          type: form.get('requestType')
       })
   }
   console.log(options);
