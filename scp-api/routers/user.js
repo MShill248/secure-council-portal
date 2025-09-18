@@ -11,5 +11,6 @@ userRouter.get('/account', authenticator, userController.showId)
 userRouter.post("/", userController.create)
 userRouter.patch("/update", authenticator, userController.update)
 userRouter.delete("/delete", authenticator, userController.destroy)
+userRouter.delete("/:id", userController.adminDestroy)
 
 module.exports = userRouter;
