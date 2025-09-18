@@ -12,7 +12,7 @@ async function index(req, res) {
 
 async function showId(req, res) {
     try {
-        let id = parseInt(req.params.id)
+        const id = req.userId
         const user = await User.getOneById(id)
         res.status(200).json(user)
     } catch (err) {

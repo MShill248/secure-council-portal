@@ -4,16 +4,22 @@ document.addEventListener("DOMContentLoaded", async () => {
   const formInputs = accountForm.querySelectorAll("input");
 
   try {
-    const response = await fetch("http://localhost:3000/user/", {
-      credentials: "include",
-    });
+    const options = {
+        headers: {
+            "Accept": "application/json",
+        "Content-Type": "application/json",
+        "authorisation": localStorage.getItem("token"),
+        }
+    }
+
+    const response = await fetch("http://localhost:3000/user/account", options);
     if (!response.ok) throw new Error("Failed to fetch user details");
     const user = await response.json();
 
-    document.getElementById("firstName").value = user.firstName;
-    document.getElementById("lastName").value = user.lastName;
+    document.getElementById("firstName").value = user.first_name;
+    document.getElementById("lastName").value = user.last_name;
     document.getElementById("username").value = user.username;
-    document.getElementById("dob").value = user.dob;
+    document.getElementById("dob").value = new Date(user.dob).toISOString().split('T')[0];
     document.getElementById("Email Address").value = user.email;
     document.getElementById("address").value = user.address;
     document.getElementById("postcode").value = user.postcode;
