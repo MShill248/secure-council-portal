@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Redirect after saving
         alert('Successfully Logged In');
-        window.location.assign("homepage.html");
+        window.location.assign("otp.html");
       } else {
         alert(data.error || "Login failed: no token received");
       }

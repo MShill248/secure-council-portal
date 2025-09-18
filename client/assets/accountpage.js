@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const formInputs = accountForm.querySelectorAll("input");
 
   try {
-    const response = await fetch("/api/user", {
+    const response = await fetch("http://localhost:3000/user/", {
       credentials: "include",
     });
     if (!response.ok) throw new Error("Failed to fetch user details");
@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("lastName").value = user.lastName;
     document.getElementById("username").value = user.username;
     document.getElementById("dob").value = user.dob;
-    document.getElementById("email").value = user.email;
+    document.getElementById("Email Address").value = user.email;
     document.getElementById("address").value = user.address;
     document.getElementById("postcode").value = user.postcode;
     document.getElementById("borough").value = user.borough;
@@ -25,6 +25,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   editBtn.addEventListener("click", async () => {
     const isEditing = editBtn.textContent === "Edit Details";
+    
 
   });
 });
