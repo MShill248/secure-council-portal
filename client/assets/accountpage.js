@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         headers: {
             "Accept": "application/json",
         "Content-Type": "application/json",
-        "authorization": localStorage.getItem("token"),
+        "authorisation": localStorage.getItem("token"),
         }
     }
 
