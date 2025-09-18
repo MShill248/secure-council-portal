@@ -23,9 +23,47 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.error("Error loading user details:", error);
   }
 
-  editBtn.addEventListener("click", async () => {
+editBtn.addEventListener("click", async () => {
     const isEditing = editBtn.textContent === "Edit Details";
-    
+    if (isEditing) {
+        formInputs.forEach((input) => {
+            if (
+                input.id !== "firstName" &&
+                input.id !== "lastName" &&
+                input.id !== "username"
+            ) {
+                input.removeAttribute("readonly");
+            }
+        });
+        editBtn.textContent = "Save Details";
+    } else {
+        const updatedUser = {};
+        formInputs.forEach((input) => {
+            if (
+                input.id !== "firstName" &&
+                input.id !== "lastName" &&
+                input.id !== "username"
+            ) {
+                updatedUser[input.id] = input.value;
+            }
+        });
 
-  });
-});
+        try {
+            const response = await fetch("http://localhost:3000/user/", {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                credentials: "include",
+                body: JSON.stringify(updatedUser),
+            });
+            if (!response.ok) throw new Error("Failed to update user details");
+            formInputs.forEach((input) => input.setAttribute("readonly", true));
+            editBtn.textContent = "Edit Details";
+        } catch (error) {
+            console.error("Error saving user details:", error);
+            alert("Failed to save details. Please try again.");
+        }
+    }
+    })
+})
