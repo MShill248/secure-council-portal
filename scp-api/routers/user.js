@@ -9,7 +9,7 @@ const userRouter = Router()
 userRouter.get('/', userController.index)
 userRouter.get('/account', authenticator, userController.showId)
 userRouter.post("/", userController.create)
-userRouter.patch("/:id", userController.update)
-userRouter.delete("/:id", userController.destroy)
+userRouter.patch("/update", authenticator, userController.update)
+userRouter.delete("/delete", authenticator, userController.destroy)
 
 module.exports = userRouter;
