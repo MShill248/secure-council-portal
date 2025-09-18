@@ -1,7 +1,5 @@
 const User = require('../models/User')
 
-const otpStore = {};
-
 async function index(req, res) {
     try {
         const users = await User.getAll()

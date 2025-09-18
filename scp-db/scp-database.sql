@@ -64,6 +64,20 @@ CREATE TABLE messages (
     content TEXT NOT NULL,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (request_id) REFERENCES requests(request_id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (receiver_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (sender_id) REFERENCES users(user_id) ON DELETE CASCADE,
     PRIMARY KEY (message_id)
 );
+
+ALTER TABLE messages
+ADD CONSTRAINT receiver_id_cannot_equal_sender_id CHECK (receiver_id <> sender_id);
+
+INSERT INTO messages (request_id, sender_id, receiver_id, content, timestamp)
+VALUES
+    (1, 6, 2, 'Hi, I wanted to follow up on the request.', '2025-09-01 10:15:00'),
+    (2, 6, 4, 'Can you provide more details?', '2025-09-01 11:45:00'),
+    (3, 6, 5, 'Thanks for sending this over.', '2025-09-02 09:30:00'),
+    (4, 6, 1, 'I''ll check and get back to you shortly.', '2025-09-02 14:10:00'),
+    (5, 6, 2, 'Could you clarify the timeline?', '2025-09-03 16:25:00'),
+    (6, 7, 3, 'Everything looks good on my end.', '2025-09-04 08:55:00'),
+    (7, 7, 5, 'I''ll need some extra time to review.', '2025-09-04 12:40:00');
