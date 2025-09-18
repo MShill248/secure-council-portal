@@ -31,7 +31,7 @@ async function login(req, res) {
         }
         if (user.user_role.toLowerCase() == 'developer') {
             // Bypass MFA for developer accounts
-            const payload = { username: user.username };
+            const payload = { username: user.username, user_id: user.user_id };
             jwt.sign(payload, process.env.SECRET_TOKEN, { expiresIn: 3600 }, (err, token) => {
                 if (err)return res.status(500).json({ error: 'Error in token generation' });
                 res.status(200).json({ success: true, token, user_id: user.user_id, user_role: user.user_role});
@@ -80,7 +80,7 @@ async function verifyOtp(req, res) {
         if (record.otp !== data.otp) {
             return res.status(401).json({ error: 'Invalid OTP' });
         }
-        const payload = { username: data.username };
+        const payload = { username: user.username, userId: user.user_id };
         jwt.sign(payload, process.env.SECRET_TOKEN, { expiresIn: 3600 }, (err, token) => {
             if (err) {
                 return res.status(500).json({ error: 'Error in token generation' });
