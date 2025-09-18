@@ -1,10 +1,5 @@
 const usersController = require('../scp-api/controllers/user.js');
 
-/**
- * Mock the User model as a class with:
- *  - static methods: getAll, getOneById, create
- *  - instance methods: update, destroy
- */
 jest.mock('../scp-api/models/User.js', () => {
   return class User {
     constructor(props) { Object.assign(this, props); }
