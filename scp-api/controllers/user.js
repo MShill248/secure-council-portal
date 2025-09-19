@@ -39,7 +39,7 @@ async function update(req, res) {
         req.body.last_name ||= user.last_name
         req.body.email ||= user.email
         req.body.password ||= user.password
-        req.body.address ||= user.address
+        req.body.dob ||= user.address
         req.body.postcode ||= user.postcode
         req.body.borough ||= user.borough
         req.body.phone_number ||= user.phone_number
@@ -75,11 +75,22 @@ async function adminDestroy(req, res) {
     }
 }
 
+async function showUser(req, res) {
+    try {
+        let id = parseInt(req.params.id)
+        const user = await User.getOneById(id)
+        res.status(200).json(user)
+    } catch (err) {
+        res.status(404).json({ error: err.message })
+    }
+}
+
 module.exports = {
     index,
     showId,
     create,
     update,
     destroy,
-    adminDestroy
+    adminDestroy,
+    showUser
 }
