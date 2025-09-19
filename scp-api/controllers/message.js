@@ -46,9 +46,8 @@ async function getByRequestId(req, res) {
 
 async function create(req, res) {
     try {
-        const { request_id, receiver_id, content, token} = req.body
-        const payload = jwt.verify(token, process.env.SECRET_TOKEN)
-        const username = payload.username 
+        const { request_id, receiver_id, content} = req.body
+        const username = req.username
         const user = await User.getOneByUsername(username)
         const sender_id = user.user_id
         const newMessage = await Message.create({
@@ -68,9 +67,8 @@ async function update(req, res) {
     try {
         const id = parseInt(req.params.id)
         const message = await Message.getOneById(id)
-        const {content, token} = req.body
-        const payload = jwt.verify(token, process.env.SECRET_TOKEN)
-        const username = payload.username 
+        const { content } = req.body
+        const username = req.username 
         const user = await User.getOneByUsername(username)
         const user_id = user.user_id
         const timestamp = new Date()
@@ -90,9 +88,7 @@ async function update(req, res) {
 async function destroy(req, res) {
     try {
         const id = parseInt(req.params.id)
-        const { token } = req.body
-        const payload = jwt.verify(token, process.env.SECRET_TOKEN)
-        const username = payload.username 
+        const username = req.username
         const user = await User.getOneByUsername(username)
         const user_id = user.user_id
         const message = await Message.getOneById(id)
