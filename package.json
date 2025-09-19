@@ -1,0 +1,36 @@
+{
+  "name": "secure-council-portal",
+  "version": "1.0.0",
+  "description": "ted features with correct name\r ali feature branch",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --runInBand --coverage"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/__tests__/**/*.test.js"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MShill248/secure-council-portal.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MShill248/secure-council-portal/issues"
+  },
+  "homepage": "https://github.com/MShill248/secure-council-portal#readme",
+  "devDependencies": {
+    "jest": "^30.1.3",
+    "jest-environment-jsdom": "^30.1.2",
+    "supertest": "^7.1.4"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0"
+  }
+}
