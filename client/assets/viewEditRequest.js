@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 "Content-Type": "application/json",
                 "Authorization": localStorage.getItem("token")
             }
-        };
+        }
         const response = await fetch(`http://localhost:3000/request/${requestId}`, options)
         if (!response.ok) throw new Error("Failed to fetch request details")
         const request = await response.json()
@@ -92,5 +92,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 alert("Failed to save request. Please try again.")
             }
         }
+    
+    
     })
 })
