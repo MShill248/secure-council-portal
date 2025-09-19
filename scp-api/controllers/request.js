@@ -15,7 +15,13 @@ async function index(req, res) {
 async function showId(req, res) {
     try {
         let id = parseInt(req.params.id)
+        const username = req.username 
+        const user = await User.getOneByUsername(username)
+        const user_id = user.user_id
         const request = await Request.getOneById(id)
+        if (request.user_id !== user_id){
+            return res.status(404).json({ error: "Access denied" })
+        }
         res.status(200).json(request)
     } catch (err) {
         res.status(404).json({ error: err.message })
@@ -24,7 +30,7 @@ async function showId(req, res) {
 
 async function getByUserId(req, res) {
     try {
-        const user_id = parseInt(req.params.user_id)
+        const user_id = req.userId
         const requests = await Request.getByUserId(user_id)
         res.status(200).json(requests)
     } catch (err) {
