@@ -11,7 +11,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
         </script>
-    <script defer src="./assets/accountpage.js"></script>
+    <script defer src="./assets/changeEmail.js"></script>
 </head>
 
 <body>
@@ -92,83 +92,40 @@
     </nav>
 
     <main>
-        <h1 class="text-center">Your SCP Account</h1>
+        <h1 class="text-center">Change your email</h1>
         <div class="container">
-            <form id="account-form" class="account-form" novalidate>
+            <form id="email-form" class="email-form" novalidate>
                 <div class="row">
                     <div class="col-md-8 mb-5">
                         <div class="card shadow-sm rounded">
                             <div class="card-body">
                                 <div class="p-2">
 
-                                    <div class="row mb-5">
-                                        <div class="col">
-                                            <label class="form-label">First name</label>
-                                            <input type="text" class="form-control" id="firstName" name="firstName"
-                                                readonly>
-                                        </div>
-                                        <div class="col">
-                                            <label class="form-label">Last name</label>
-                                            <input type="text" class="form-control" id="lastName" name="lastName"
-                                                readonly>
-                                        </div>
-                                    </div>
-
-                                    <div class="row mb-5">
-                                        <div class="col">
-                                            <label class="form-label">Username</label>
-                                            <div class="input-group">
-                                                <span class="input-group-text">@</span>
-                                                <input type="text" class="form-control" id="username" name="username"
-                                                    readonly>
-                                            </div>
-                                        </div>
-                                        <div class="col">
-                                            <label class="form-label">Date of Birth</label>
-                                            <input type="date" class="form-control" id="dob" name="dob" readonly>
-                                        </div>
-                                    </div>
-
                                     <div class="mb-4">
-                                        <label class="form-label">Email Address</label>
-                                        <input type="text" class="form-control" id="Email Address" name="Email Address"
+                                        <label class="form-label">Current Email Address</label>
+                                        <input type="text" class="form-control" id="EmailAddress" name="Email Address"
                                             readonly>
                                     </div>
 
                                     <div class="mb-4">
-                                        <label class="form-label">Address</label>
-                                        <input type="text" class="form-control" id="address" name="address" readonly>
+                                        <label class="form-label">New Email address</label>
+                                        <input type="text" class="form-control" id="NewEmail" name="NewEmail">
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <label class="form-label">Current Password</label>
+                                        <input type="password" class="form-control" id="password" name="password">
                                     </div>
 
                                     <div class="mb-4 d-flex justify-content-center gap-3">
-                                        <button type="button" class="btn btn-danger btn-sm">Delete</button>
-                                        <button type="button" class="btn btn-success btn-sm">Edit Details</button>
+                                        <button type="button" class="btn btn-danger btn-sm">Cancel</button>
+                                        <button type="button" class="btn btn-success btn-sm">Change Email Address</button>
                                     </div>
 
                                 </div>
                             </div>
                         </div>
                     </div>
-
-
-                    <div class="col-md-4 mb-5 text-center">
-                        <div class="card shadow-sm rounded">
-                            <div class="card-body">
-
-                                <div class="mb-5">
-                                    <i class="bi bi-person-circle" style="font-size: 10rem;"></i>
-                                </div>
-
-                                <div class="mb-5">
-                                    <label class="form-label">Postcode</label>
-                                    <input type="text" class="form-control" id="postcode" name="postcode" readonly>
-                                </div>
-                                <div class="mb-5">
-                                    <label class="form-label">Borough</label>
-                                    <input type="text" class="form-control" id="borough" name="borough" readonly>
-                                </div>
-                            </div>
-                        </div>
             </form>
         </div>
     </main>

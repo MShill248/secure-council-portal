@@ -7,9 +7,11 @@ const userRouter = Router()
 
 // userRouter.get('/', authenticator, userController.index)
 userRouter.get('/', userController.index)
-userRouter.get('/:id', userController.showId)
+userRouter.get('/account', authenticator, userController.showId)
+userRouter.get('/:id', userController.showUser)
 userRouter.post("/", userController.create)
-userRouter.patch("/:id", userController.update)
-userRouter.delete("/:id", userController.destroy)
+userRouter.patch("/update", authenticator, userController.update)
+userRouter.delete("/delete", authenticator, userController.destroy)
+userRouter.delete("/:id", userController.adminDestroy)
 
 module.exports = userRouter;

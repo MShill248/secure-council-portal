@@ -31,14 +31,14 @@ async function login(req, res) {
         }
         if (user.user_role.toLowerCase() == 'developer') {
             // Bypass MFA for developer accounts
-            const payload = { username: user.username };
+            const payload = { username: user.username, user_id: user.user_id };
             jwt.sign(payload, process.env.SECRET_TOKEN, { expiresIn: 3600 }, (err, token) => {
                 if (err)return res.status(500).json({ error: 'Error in token generation' });
                 res.status(200).json({ success: true, token, user_id: user.user_id, user_role: user.user_role});
             });
         } else {
             const otp = (Math.floor(100000 + Math.random() * 900000)).toString();
-            otpStore[user.email] = {
+            otpStore[user.username] = {
                 otp,
                 expires: Date.now() + 5 * 60 * 1000 // 5 minutes
             };
@@ -58,7 +58,7 @@ async function login(req, res) {
                 subject: 'Your SCP OTP',
                 text: `Your OTP is: ${otp}`
             });
-            res.status(200).json({ success: true, message: 'OTP sent to email.' });
+            res.status(200).json({ success: true, message: 'OTP sent to email.', username: user.username });
         }
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -68,25 +68,25 @@ async function login(req, res) {
 async function verifyOtp(req, res) {
     try {
         const data = req.body;
-        const user = await User.getOneByEmail(data.email);
-        const record = otpStore[data.email];
+        const user = await User.getOneByUsername(data.username);
+        const record = otpStore[data.username];
         if (!record) {
-            return res.status(400).json({ error: 'No OTP requested for this email' });
+            return res.status(400).json({ error: 'No OTP requested for this user' });
         }
         if (Date.now() > record.expires) {
-            delete otpStore[data.email];
+            delete otpStore[data.username];
             return res.status(400).json({ error: 'OTP expired' });
         }
         if (record.otp !== data.otp) {
             return res.status(401).json({ error: 'Invalid OTP' });
         }
-        const payload = { email: data.email };
+        const payload = { username: user.username, userId: user.user_id };
         jwt.sign(payload, process.env.SECRET_TOKEN, { expiresIn: 3600 }, (err, token) => {
             if (err) {
                 return res.status(500).json({ error: 'Error in token generation' });
             }
-            delete otpStore[data.email];
-            res.status(200).json({ success: true, token, userid: user.userid, userrole: user.userrole});
+            delete otpStore[data.username];
+            res.status(200).json({ success: true, token, user_id: user.user_id, user_role: user.user_role});
         });
     } catch (err) {
         res.status(500).json({ error: err.message });

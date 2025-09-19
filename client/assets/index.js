@@ -27,20 +27,18 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = await response.json();
       console.log("Login response:", data);
 
-      // Check that the token exists
-      if (data.token) {
-        // Save token to localStorage
-        localStorage.setItem('token', data.token);
+      // Check that the username exists
+      if (data.username) {
+        // Save username to localStorage
         localStorage.setItem('username', data.username);
-        localStorage.setItem('userid', data.userid);
         
-        console.log("Token saved to localStorage:", localStorage.getItem('token'));
+        console.log("Username saved to localStorage:", localStorage.getItem('username'));
 
         // Redirect after saving
-        alert('Successfully Logged In');
-        window.location.assign("homepage.html");
+        alert('OTP has been sent');
+        window.location.assign("otp.html");
       } else {
-        alert(data.error || "Login failed: no token received");
+        alert(data.error || "Login failed: no username received");
       }
     } catch (err) {
       console.error(err);

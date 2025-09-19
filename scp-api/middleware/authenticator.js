@@ -10,6 +10,12 @@ function authenticator(req, res, next){
                 // if it cannot be verified, access is forbidden
                 res.status(403).json({ err: 'Invalid token' })
             } else {
+                if (data.userId) {
+                    req.userId = data.userId
+                } 
+                if (data.username) {
+                    req.username = data.username
+                }  
                 // if all went well, continue to the route handler (the next argument to the `router.get` above)
                 next();
             }
