@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", async () => {
   const accountForm = document.getElementById("account-form");
   const editBtn = document.querySelector(".btn-success");
+  const deleteBtn = document.querySelector(".btn-danger");
   const formInputs = accountForm.querySelectorAll("input");
 
   try {
@@ -8,7 +9,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         headers: {
         "Accept": "application/json",
         "Content-Type": "application/json",
-        "Authorization": localStorage.getItem("token"),
+        "authorization": localStorage.getItem("token"),
         }
     }
 
@@ -55,14 +56,16 @@ editBtn.addEventListener("click", async () => {
         });
 
         try {
-            const response = await fetch("http://localhost:3000/user/", {
+            const options = {
                 method: "PATCH",
                 headers: {
+                    "Accept": "application/json",
                     "Content-Type": "application/json",
+                    "authorization": localStorage.getItem("token"),
                 },
-                credentials: "include",
-                body: JSON.stringify(updatedUser),
-            });
+                body: JSON.stringify(updatedUser)
+            }
+            const response = await fetch("http://localhost:3000/user/update", options)
             if (!response.ok) throw new Error("Failed to update user details");
             formInputs.forEach((input) => input.setAttribute("readonly", true));
             editBtn.textContent = "Edit Details";
@@ -72,4 +75,29 @@ editBtn.addEventListener("click", async () => {
         }
     }
     })
+
+    deleteBtn.addEventListener("click", async () => {
+    const isDeleting = deleteBtn.textContent === "Delete";
+
+        try {
+            const options = {
+                method: "DELETE",
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                    "authorization": localStorage.getItem("token"),
+                }
+            }
+            const response = await fetch("http://localhost:3000/user/delete", options)
+            if (!response.ok) throw new Error("Failed to delete user details");
+            formInputs.forEach((input) => input.setAttribute("readonly", true));
+            deleteBtn.textContent = "Delete";
+            window.location.assign("index.html") 
+            alert("account deleted")
+        } catch (error) {
+            console.error("Error deleting user details:", error);
+            alert("Failed to delete details. Please try again.");
+        }
+    })
+    
 })
