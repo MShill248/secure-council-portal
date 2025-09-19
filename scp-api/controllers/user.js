@@ -39,7 +39,7 @@ async function update(req, res) {
         req.body.last_name ||= user.last_name
         req.body.email ||= user.email
         req.body.password ||= user.password
-        req.body.dob ||= user.address
+        req.body.address ||= user.address
         req.body.postcode ||= user.postcode
         req.body.borough ||= user.borough
         req.body.phone_number ||= user.phone_number

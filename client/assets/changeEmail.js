@@ -1,9 +1,8 @@
 document.addEventListener("DOMContentLoaded", async () => {
-    const emailForm = document.getElementById("email-form");
-    const changeBtn = document.querySelector(".btn-success");
-    const cancelBtn = document.querySelector(".btn-danger");
-    const currentEmailInput = document.getElementById("EmailAddress");
-    const newEmailInput = document.getElementById("NewEmail");
+    const changeBtn = document.querySelector(".btn-success")
+    const cancelBtn = document.querySelector(".btn-danger")
+    const currentEmailInput = document.getElementById("EmailAddress")
+    const newEmailInput = document.getElementById("NewEmail")
     const passwordInput = document.getElementById("password")
 
     async function loadUserEmail() {
@@ -24,15 +23,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    loadUserEmail();
+    loadUserEmail()
 
     changeBtn.addEventListener("click", async () => {
-    const newEmail = newEmailInput.value.trim();
-    const password = passwordInput.value.trim();
+    const newEmail = newEmailInput.value.trim()
+    const password = passwordInput.value.trim()
 
     if (!newEmail || !password) {
-        alert("Please fill in both fields");
-        return;
+        alert("Please fill in both fields")
+        return
     }
 
     try {
@@ -43,8 +42,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 "Content-Type": "application/json",
                 "authorization": localStorage.getItem("token"),
             },
-            body: JSON.stringify({ email: newEmail, password })
-        };
+            body: JSON.stringify({ email: newEmail })
+        }
 
         const response = await fetch("http://localhost:3000/user/update", options)
         const data = await response.json()
@@ -59,6 +58,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.error("Error updating email:", error)
         alert(error.message)
     }
-})
+    })
+
+    cancelBtn.addEventListener("click", (e) => {
+        e.preventDefault()
+        window.location.assign("maindashboard.html")
+    })
 })
 
