@@ -97,41 +97,37 @@
     <main class="container my-4 flex-grow-1">
         <h1 class="text-center mb-4">View Request (Council User)</h1>
 
-        <form id="viewrequest" class="viewrequest" novalidate>
-
         <div class="mx-auto" style="max-width: 900px;" id = "requestForm">
 
-                <div class="mb-3">
-                    <label for="residentName" class="form-label">Name of resident (sender)</label>
-                    <input id="residentName" class="form-control" type="text" readonly
-                        placeholder="Resident full name" />
-                </div>
+            <div class="mb-3">
+                <label for="residentName" class="form-label">Name of resident (sender)</label>
+                <input id="residentName" class="form-control" type="text" readonly placeholder="Resident full name" />
+            </div>
 
-                <div class="row g-3 mb-3">
-                    <div class="col-md-8">
-                        <label for="residentAddress" class="form-label">Address</label>
-                        <input id="residentAddress" class="form-control" type="text" readonly
-                            placeholder="Resident address" />
-                    </div>
-                    <div class="col-md-4">
-                        <label for="residentPhone" class="form-label">Phone Number</label>
-                        <input id="residentPhone" class="form-control" type="text" readonly
-                            placeholder="Phone number" />
-                    </div>
+            <div class="row g-3 mb-3">
+                <div class="col-md-8">
+                    <label for="residentAddress" class="form-label">Address</label>
+                    <input id="residentAddress" class="form-control" type="text" readonly
+                        placeholder="Resident address" />
                 </div>
-
-                <div class="mb-3">
-                    <label for="requestDescription" class="form-label">Request:</label>
-                    <textarea id="requestDescription" class="form-control" rows="6" readonly
-                        placeholder="Full request details"></textarea>
+                <div class="col-md-4">
+                    <label for="residentPhone" class="form-label">Phone Number</label>
+                    <input id="residentPhone" class="form-control" type="text" readonly placeholder="Phone number" />
                 </div>
+            </div>
 
-                <div class="d-flex justify-content-between align-items-start">
-                    <div class="mb-4 flex-grow-1">
-                        <label for="councilMessage" class="form-label">Message:</label>
-                        <textarea id="councilMessage" class="form-control w-50" rows="3"
-                            placeholder="Enter message"></textarea>
-                    </div>
+            <div class="mb-3">
+                <label for="requestDescription" class="form-label">Request:</label>
+                <textarea id="requestDescription" class="form-control" rows="6" readonly
+                    placeholder="Full request details"></textarea>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-start">
+                <div class="mb-4 flex-grow-1">
+                    <label for="councilMessage" class="form-label">Message:</label>
+                    <textarea id="councilMessage" class="form-control w-50" rows="3"
+                        placeholder="Enter message"></textarea>
+                </div>
 
                 <div class="col-md-3">
                     <label for="Priority" class="form-label">Priority level</label>
@@ -155,8 +151,8 @@
                 </label>
             </div>
 
-            </div>
-        </form>
+        </div>
+
         </div>
         <div class="d-flex gap-3 justify-content-center">
             <button id="cancelBtn" type="button" class="btn btn-outline-secondary">Cancel</button>
@@ -165,9 +161,6 @@
 
         </div>
     </main>
-
-
-
 
     <footer class="footer bg-dark text-light p-4 mt-auto">
         <div class="container text-center">

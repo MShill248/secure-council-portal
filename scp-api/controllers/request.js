@@ -19,7 +19,7 @@ async function showId(req, res) {
         const user = await User.getOneByUsername(username)
         const user_id = user.user_id
         const request = await Request.getOneById(id)
-        if (request.user_id !== user_id && user.user_role !== "council"){
+        if (request.user_id !== user_id && user.user_role != "council"){
             return res.status(404).json({ error: "Access denied" })
         }
         res.status(200).json(request)
