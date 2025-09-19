@@ -75,11 +75,22 @@ async function adminDestroy(req, res) {
     }
 }
 
+async function showUser(req, res) {
+    try {
+        let id = parseInt(req.params.id)
+        const user = await User.getOneById(id)
+        res.status(200).json(user)
+    } catch (err) {
+        res.status(404).json({ error: err.message })
+    }
+}
+
 module.exports = {
     index,
     showId,
     create,
     update,
     destroy,
-    adminDestroy
+    adminDestroy,
+    showUser
 }

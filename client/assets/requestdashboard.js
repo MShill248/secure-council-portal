@@ -1,5 +1,6 @@
 const pendingRequests = document.querySelector('#pending-requests')
 const resolvedRequests = document.querySelector('#resolved-requests')
+const logout = document.querySelector('#logout')
 
 async function getRequests() {
     let user_role
@@ -148,7 +149,7 @@ async function editRequest(e) {
         }
 
     else if (user_role == 'council'){
-            window.location.assign(`viewRequest.html`)
+            window.location.assign(`viewRequest.html?id=${e}`)
         }
  
 }
@@ -160,3 +161,8 @@ function viewedRequests(e) {
 }
 
 getRequests()
+
+logout.addEventListener('click', () => {
+    localStorage.removeItem('token')
+    window.location.assign('index.html')
+})

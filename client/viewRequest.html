@@ -12,7 +12,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
         </script>
-    <script defer src="./assets/maindashboard.js"></script>
+    <script defer src="./assets/viewRequests.js"></script>
 </head>
 
 <body class="d-flex flex-column min-vh-100">
@@ -97,7 +97,7 @@
     <main class="container my-4 flex-grow-1">
         <h1 class="text-center mb-4">View Request (Council User)</h1>
 
-        <div class="mx-auto" style="max-width: 900px;">
+        <div class="mx-auto" style="max-width: 900px;" id = "requestForm">
 
             <div class="mb-3">
                 <label for="residentName" class="form-label">Name of resident (sender)</label>
@@ -133,9 +133,9 @@
                     <label for="Priority" class="form-label">Priority level</label>
                     <select id="Priority" name="Priority" class="form-select" required>
                         <option value="" selected disabled>Select</option>
-                        <option value="High">High</option>
-                        <option value="Medium">Medium</option>
-                        <option value="High">Low</option>
+                        <option value="3">High</option>
+                        <option value="2">Medium</option>
+                        <option value="1">Low</option>
                     </select>
                     <div class="invalid-feedback">
                         Please choose a priority level for this request.
@@ -146,7 +146,7 @@
 
             <div class="d-flex justify-content-center mb-3">
                 <label class="d-flex align-items-center border rounded px-3 py-2 small-box">
-                    <input class="form-check-input me-2 custom-checkbox" type="checkbox">
+                    <input class="form-check-input me-2 custom-checkbox" type="checkbox" id = "resolved">
                     Has this request been resolved?
                 </label>
             </div>
