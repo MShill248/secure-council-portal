@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   try {
     const options = {
         headers: {
-            "Accept": "application/json",
+        "Accept": "application/json",
         "Content-Type": "application/json",
         "authorization": localStorage.getItem("token"),
         }
