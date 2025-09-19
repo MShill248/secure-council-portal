@@ -132,10 +132,27 @@ function create_elements(i) {
     }
 }
 
-function editRequest(e) {
-    localStorage.setItem('request_id', e)
-    window.location.assign("index.html")
+async function editRequest(e) {
+    const options = {
+        headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Authorization": localStorage.getItem("token"),
+        }
+    }
+    const response = await fetch('http://localhost:3000/user/account', options)
+    const data = await response.json()
+    user_role = data.user_role
+    if (user_role == 'resident'){
+        window.location.assign(`viewEditRequest.html?id=${e}`)
+        }
+
+    else if (user_role == 'council'){
+            window.location.assign(`viewRequest.html`)
+        }
+ 
 }
+
 
 function viewedRequests(e) {
     localStorage.setItem('request_id', e)
