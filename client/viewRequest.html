@@ -12,7 +12,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
         </script>
-    <script defer src="./assets/maindashboard.js"></script>
+    <script defer src="./assets/viewRequests.js"></script>
 </head>
 
 <body class="d-flex flex-column min-vh-100">
@@ -97,62 +97,66 @@
     <main class="container my-4 flex-grow-1">
         <h1 class="text-center mb-4">View Request (Council User)</h1>
 
-        <div class="mx-auto" style="max-width: 900px;">
+        <form id="viewrequest" class="viewrequest" novalidate>
 
-            <div class="mb-3">
-                <label for="residentName" class="form-label">Name of resident (sender)</label>
-                <input id="residentName" class="form-control" type="text" readonly placeholder="Resident full name" />
-            </div>
+            <div class="mx-auto" style="max-width: 900px;">
 
-            <div class="row g-3 mb-3">
-                <div class="col-md-8">
-                    <label for="residentAddress" class="form-label">Address</label>
-                    <input id="residentAddress" class="form-control" type="text" readonly
-                        placeholder="Resident address" />
-                </div>
-                <div class="col-md-4">
-                    <label for="residentPhone" class="form-label">Phone Number</label>
-                    <input id="residentPhone" class="form-control" type="text" readonly placeholder="Phone number" />
-                </div>
-            </div>
-
-            <div class="mb-3">
-                <label for="requestDescription" class="form-label">Request:</label>
-                <textarea id="requestDescription" class="form-control" rows="6" readonly
-                    placeholder="Full request details"></textarea>
-            </div>
-
-            <div class="d-flex justify-content-between align-items-start">
-                <div class="mb-4 flex-grow-1">
-                    <label for="councilMessage" class="form-label">Message:</label>
-                    <textarea id="councilMessage" class="form-control w-50" rows="3"
-                        placeholder="Enter message"></textarea>
+                <div class="mb-3">
+                    <label for="residentName" class="form-label">Name of resident (sender)</label>
+                    <input id="residentName" class="form-control" type="text" readonly
+                        placeholder="Resident full name" />
                 </div>
 
-                <div class="col-md-3">
-                    <label for="Priority" class="form-label">Priority level</label>
-                    <select id="Priority" name="Priority" class="form-select" required>
-                        <option value="" selected disabled>Select</option>
-                        <option value="High">High</option>
-                        <option value="Medium">Medium</option>
-                        <option value="High">Low</option>
-                    </select>
-                    <div class="invalid-feedback">
-                        Please choose a priority level for this request.
+                <div class="row g-3 mb-3">
+                    <div class="col-md-8">
+                        <label for="residentAddress" class="form-label">Address</label>
+                        <input id="residentAddress" class="form-control" type="text" readonly
+                            placeholder="Resident address" />
+                    </div>
+                    <div class="col-md-4">
+                        <label for="residentPhone" class="form-label">Phone Number</label>
+                        <input id="residentPhone" class="form-control" type="text" readonly
+                            placeholder="Phone number" />
                     </div>
                 </div>
+
+                <div class="mb-3">
+                    <label for="requestDescription" class="form-label">Request:</label>
+                    <textarea id="requestDescription" class="form-control" rows="6" readonly
+                        placeholder="Full request details"></textarea>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="mb-4 flex-grow-1">
+                        <label for="councilMessage" class="form-label">Message:</label>
+                        <textarea id="councilMessage" class="form-control w-50" rows="3"
+                            placeholder="Enter message"></textarea>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label for="Priority" class="form-label">Priority level</label>
+                        <select id="Priority" name="Priority" class="form-select" required>
+                            <option value="" selected disabled>Select</option>
+                            <option value="High">High</option>
+                            <option value="Medium">Medium</option>
+                            <option value="High">Low</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            Please choose a priority level for this request.
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="d-flex justify-content-center mb-3">
+                    <label class="d-flex align-items-center border rounded px-3 py-2 small-box">
+                        <input class="form-check-input me-2 custom-checkbox" type="checkbox">
+                        Has this request been resolved?
+                    </label>
+                </div>
+
             </div>
-
-
-            <div class="d-flex justify-content-center mb-3">
-                <label class="d-flex align-items-center border rounded px-3 py-2 small-box">
-                    <input class="form-check-input me-2 custom-checkbox" type="checkbox">
-                    Has this request been resolved?
-                </label>
-            </div>
-
-        </div>
-
+        </form>
         </div>
         <div class="d-flex gap-3 justify-content-center">
             <button id="cancelBtn" type="button" class="btn btn-outline-secondary">Cancel</button>
@@ -161,6 +165,9 @@
 
         </div>
     </main>
+
+
+
 
     <footer class="footer bg-dark text-light p-4 mt-auto">
         <div class="container text-center">

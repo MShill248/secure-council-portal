@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", async () => {
     const requestForm = document.getElementById("request-form")
     const editBtn = document.querySelector(".btn-success")
+    const returnBtn = document.querySelector(".btn-outline-secondary")
     const formInputs = requestForm.querySelectorAll("input, select, textarea")
     const councilMessage = document.getElementById("message")
     const params = new URLSearchParams(window.location.search)
@@ -93,4 +94,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
         }
     })
+
+    returnBtn.addEventListener("click", () => {
+        window.location.href = "requestdashboard.html";
+    });
 })
