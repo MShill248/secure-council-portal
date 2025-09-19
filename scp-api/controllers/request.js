@@ -24,7 +24,7 @@ async function showId(req, res) {
 
 async function getByUserId(req, res) {
     try {
-        const user_id = parseInt(req.params.user_id)
+        const user_id = req.userId
         const requests = await Request.getByUserId(user_id)
         res.status(200).json(requests)
     } catch (err) {
