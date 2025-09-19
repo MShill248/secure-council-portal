@@ -4,19 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Request - COUNCIL</title>
+    <title>Sign Up</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <link rel="stylesheet" href="./styling/styles.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
         </script>
-    <script defer src="./assets/viewRequests.js"></script>
+    <script defer src="./assets/changeEmail.js"></script>
 </head>
 
-<body class="d-flex flex-column min-vh-100">
-
+<body>
     <nav class="navbar navbar-dark bg-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="maindashboard.html">SCP</a>
@@ -93,88 +91,41 @@
         </div>
     </nav>
 
-    <!-- MAIN CONTENT -->
-    <main class="container my-4 flex-grow-1">
-        <h1 class="text-center mb-4">View Request (Council User)</h1>
+    <main>
+        <h1 class="text-center">Change your email</h1>
+        <div class="container">
+            <form id="email-form" class="email-form" novalidate>
+                <div class="row">
+                    <div class="col-md-8 mb-5">
+                        <div class="card shadow-sm rounded">
+                            <div class="card-body">
+                                <div class="p-2">
 
-        <form id="viewrequest" class="viewrequest" novalidate>
+                                    <div class="mb-4">
+                                        <label class="form-label">Current Email Address</label>
+                                        <input type="text" class="form-control" id="EmailAddress" name="Email Address"
+                                            readonly>
+                                    </div>
 
-        <div class="mx-auto" style="max-width: 900px;" id = "requestForm">
+                                    <div class="mb-4">
+                                        <label class="form-label">New Email address</label>
+                                        <input type="text" class="form-control" id="NewEmail" name="NewEmail">
+                                    </div>
 
-                <div class="mb-3">
-                    <label for="residentName" class="form-label">Name of resident (sender)</label>
-                    <input id="residentName" class="form-control" type="text" readonly
-                        placeholder="Resident full name" />
-                </div>
+                                    <div class="mb-4">
+                                        <label class="form-label">Current Password</label>
+                                        <input type="password" class="form-control" id="password" name="password">
+                                    </div>
 
-                <div class="row g-3 mb-3">
-                    <div class="col-md-8">
-                        <label for="residentAddress" class="form-label">Address</label>
-                        <input id="residentAddress" class="form-control" type="text" readonly
-                            placeholder="Resident address" />
+                                    <div class="mb-4 d-flex justify-content-center gap-3">
+                                        <button type="button" class="btn btn-danger btn-sm">Cancel</button>
+                                        <button type="button" class="btn btn-success btn-sm">Change Email Address</button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md-4">
-                        <label for="residentPhone" class="form-label">Phone Number</label>
-                        <input id="residentPhone" class="form-control" type="text" readonly
-                            placeholder="Phone number" />
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="requestDescription" class="form-label">Request:</label>
-                    <textarea id="requestDescription" class="form-control" rows="6" readonly
-                        placeholder="Full request details"></textarea>
-                </div>
-
-                <div class="d-flex justify-content-between align-items-start">
-                    <div class="mb-4 flex-grow-1">
-                        <label for="councilMessage" class="form-label">Message:</label>
-                        <textarea id="councilMessage" class="form-control w-50" rows="3"
-                            placeholder="Enter message"></textarea>
-                    </div>
-
-                <div class="col-md-3">
-                    <label for="Priority" class="form-label">Priority level</label>
-                    <select id="Priority" name="Priority" class="form-select" required>
-                        <option value="" selected disabled>Select</option>
-                        <option value="3">High</option>
-                        <option value="2">Medium</option>
-                        <option value="1">Low</option>
-                    </select>
-                    <div class="invalid-feedback">
-                        Please choose a priority level for this request.
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="d-flex justify-content-center mb-3">
-                <label class="d-flex align-items-center border rounded px-3 py-2 small-box">
-                    <input class="form-check-input me-2 custom-checkbox" type="checkbox" id = "resolved">
-                    Has this request been resolved?
-                </label>
-            </div>
-
-            </div>
-        </form>
-        </div>
-        <div class="d-flex gap-3 justify-content-center">
-            <button id="cancelBtn" type="button" class="btn btn-outline-secondary">Cancel</button>
-            <button id="submitBtn" type="button" class="btn btn-success">Submit</button>
-        </div>
-
+            </form>
         </div>
     </main>
-
-
-
-
-    <footer class="footer bg-dark text-light p-4 mt-auto">
-        <div class="container text-center">
-            <small>&copy; 2025 Secure Council Portal. All rights reserved.</small>
-        </div>
-    </footer>
-
-</body>
-
-</html>

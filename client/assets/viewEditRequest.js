@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", async () => {
     const requestForm = document.getElementById("request-form")
     const editBtn = document.querySelector(".btn-success")
+    const returnBtn = document.querySelector(".btn-outline-secondary")
     const formInputs = requestForm.querySelectorAll("input, select, textarea")
     const councilMessage = document.getElementById("message")
     const params = new URLSearchParams(window.location.search)
@@ -13,7 +14,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 "Content-Type": "application/json",
                 "Authorization": localStorage.getItem("token")
             }
-        };
+        }
         const response = await fetch(`http://localhost:3000/request/${requestId}`, options)
         if (!response.ok) throw new Error("Failed to fetch request details")
         const request = await response.json()
@@ -92,5 +93,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                 alert("Failed to save request. Please try again.")
             }
         }
+    
+    
     })
+
+    returnBtn.addEventListener("click", () => {
+        window.location.href = "requestdashboard.html";
+    });
 })
