@@ -93,8 +93,51 @@ async function verifyOtp(req, res) {
     }
 }
 
+async function sendOtp(req, res) {
+    try {
+        const { username } = req.body;
+
+        if (!username) {
+            return res.status(400).json({ error: "Username is required" })
+        }
+
+        const user = await User.getOneByUsername(username)
+        if (!user) {
+            return res.status(404).json({ error: "User not found" })
+        }
+
+        const otp = Math.floor(100000 + Math.random() * 900000).toString()
+
+        otpStore[user.username] = {
+            otp,
+            expires: Date.now() + 5 * 60 * 1000
+        }
+
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS
+            },
+            tls: { rejectUnauthorized: false }
+        })
+
+        await transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: user.email,
+            subject: 'Your SCP OTP for password reset',
+            text: `Your OTP for password reset is: ${otp}. This will expire in 5 minutes.`
+        })
+
+        res.status(200).json({ success: true, message: 'OTP sent to email.', username: user.username });
+    } catch (err) {
+        res.status(500).json({ error: "Failed to send OTP" })
+    }
+}
+
 module.exports = {
     register,
     login,
-    verifyOtp
+    verifyOtp,
+    sendOtp
 };

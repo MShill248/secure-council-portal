@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 description: document.getElementById("description").value,
                 type: document.getElementById("requestType").value,
                 category: document.getElementById("requestCategory").value
-            };
+            }
 
             try {
                 const patchOptions = {
@@ -98,6 +98,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     })
 
     returnBtn.addEventListener("click", () => {
-        window.location.href = "requestdashboard.html";
-    });
+        window.location.href = "requestdashboard.html"
+    })
 })
