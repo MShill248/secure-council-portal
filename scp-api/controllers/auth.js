@@ -135,9 +135,40 @@ async function sendOtp(req, res) {
     }
 }
 
+async function verifyPassword(req, res) {
+    try {
+        const { username, password } = req.body
+
+        if (!username || !password) {
+            return res.status(400).json({ error: "Username and password are required" })
+        }
+
+        const user = await User.getOneByUsername(username)
+        
+        if (!user) {
+            return res.status(404).json({ error: "User not found" })
+        }
+
+        const match = await bcrypt.compare(password, user.password)
+        
+        if (!match) {
+            return res.status(401).json({ error: "Current password incorrect" })
+        }
+
+        const payload = { username: user.username, userId: user.user_id }
+        const token = jwt.sign(payload, process.env.SECRET_TOKEN, { expiresIn: "5m" })
+
+        res.status(200).json({ success: true, token })
+    } catch (err) {
+        console.error(err)
+        res.status(500).json({ error: err.message })
+    }
+}
+
 module.exports = {
     register,
     login,
     verifyOtp,
-    sendOtp
+    sendOtp,
+    verifyPassword
 };
