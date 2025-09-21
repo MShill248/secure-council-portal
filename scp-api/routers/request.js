@@ -7,7 +7,7 @@ const requestRouter = Router()
 
 requestRouter.get("/", requestController.index)
 requestRouter.get("/recent", requestController.getByRecent)
-requestRouter.get("/user/:user_id", requestController.getByUserId)
+requestRouter.get("/user", authenticator, requestController.getByUserId)
 requestRouter.get("/status/:status", requestController.getByStatus)
 requestRouter.get("/priority/:priority", requestController.getByPriority)
 requestRouter.get("/category/:category", requestController.getByCategory)
