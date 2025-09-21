@@ -93,9 +93,10 @@ async function verifyOtp(req, res) {
     }
 }
 
+// snedOtp for resetting password
 async function sendOtp(req, res) {
     try {
-        const { username } = req.body;
+        const { username } = req.body
 
         if (!username) {
             return res.status(400).json({ error: "Username is required" })
@@ -129,7 +130,7 @@ async function sendOtp(req, res) {
             text: `Your OTP for password reset is: ${otp}. This will expire in 5 minutes.`
         })
 
-        res.status(200).json({ success: true, message: 'OTP sent to email.', username: user.username });
+        res.status(200).json({ success: true, message: 'OTP sent to email.', username: user.username })
     } catch (err) {
         res.status(500).json({ error: "Failed to send OTP" })
     }
@@ -156,7 +157,7 @@ async function verifyPassword(req, res) {
         }
 
         const payload = { username: user.username, userId: user.user_id }
-        const token = jwt.sign(payload, process.env.SECRET_TOKEN, { expiresIn: "5m" })
+        const token = jwt.sign(payload, process.env.SECRET_TOKEN, { expiresIn: "5m" }) // short-term jwt to verify username and password
 
         res.status(200).json({ success: true, token })
     } catch (err) {
