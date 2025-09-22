@@ -126,8 +126,8 @@ async function sendOtp(req, res) {
         await transporter.sendMail({
             from: process.env.EMAIL_USER,
             to: user.email,
-            subject: 'Your SCP OTP for password reset',
-            text: `Your OTP for password reset is: ${otp}. This will expire in 5 minutes.`
+            subject: 'Your new SCP OTP',
+            text: `Your new OTP is: ${otp}. This will expire in 5 minutes.`
         })
 
         res.status(200).json({ success: true, message: 'OTP sent to email.', username: user.username })
