@@ -78,7 +78,7 @@ function create_elements(req) {
         } else {
             type.classList.add("badge", "bg-primary-subtle", "text-primary", "border", "border-primary")
         }
-        type.textContent = req.type
+        type.textContent = req.type.toUpperCase();
         tagRow.appendChild(type);
 
         request.appendChild(title)
@@ -135,7 +135,7 @@ function create_elements(req) {
       status.textContent = "UNRESOLVED";
     } else {
       status.classList.add("badge", "bg-info-subtle", "text-info", "border", "border-info");
-      status.textContent = req.status;
+      status.textContent = req.status.toUpperCase();
     }
 
     body.appendChild(left);
