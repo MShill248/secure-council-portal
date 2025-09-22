@@ -1,4 +1,9 @@
+const { ChildProcess } = require('child_process');
 const db = require('../database/connect');
+const encrypter = require('../encrypt/crypto')
+const crypto = require('crypto')
+
+const key = crypto.scryptSync('secretPassword', 'salt', 32);
 
 class Request {
 
@@ -28,6 +33,7 @@ class Request {
         if (response.rows.length != 1) {
             throw new Error("Unable to locate request.")
         }
+        encrypter.decryptRequest(response.rows[0], key)
         return new Request(response.rows[0])
     }
 
@@ -35,6 +41,9 @@ class Request {
         const response = await db.query("SELECT * FROM requests WHERE user_id = $1", [user_id]);
         if (response.rows.length === 0) {
             throw new Error("No requests found")
+        }
+        for(let i = 0; i < response.rows.length; i++) {
+            encrypter.decryptRequest(response.rows[i], key)
         }
         return response.rows.map((request) => new Request(request))
     }
@@ -87,8 +96,10 @@ class Request {
             throw Error("A user with this ID does not exist")
         }
 
+        const encryptedData = encrypter.encryptArray([title, description, status, category])
+
         let response = await db.query("INSERT INTO requests (user_id, title, description, status, category, priority, type) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;",
-            [user_id, title, description, status, category, priority, type])
+            [user_id,  encryptedData[0], encryptedData[1], encryptedData[2], encryptedData[3], priority, type])
         if (response.rows.length != 1) {
             throw new Error("Unable to create request.")
         }

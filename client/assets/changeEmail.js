@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const currentEmailInput = document.getElementById("EmailAddress")
     const newEmailInput = document.getElementById("NewEmail")
     const passwordInput = document.getElementById("password")
+    const logout = document.querySelector('#logout')
 
     async function loadUserEmail() {
         try {
@@ -63,6 +64,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     cancelBtn.addEventListener("click", (e) => {
         e.preventDefault()
         window.location.assign("maindashboard.html")
+    })
+    logout.addEventListener('click', () => {
+        localStorage.removeItem('token')
+        window.location.assign('index.html')
     })
 })
 

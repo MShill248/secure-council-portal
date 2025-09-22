@@ -1,3 +1,4 @@
+const logout = document.querySelector('#logout')
 document.addEventListener("DOMContentLoaded", async () => {
   const accountForm = document.getElementById("account-form");
   const editBtn = document.querySelector(".btn-success");
@@ -100,4 +101,8 @@ editBtn.addEventListener("click", async () => {
         }
     })
     
+})
+logout.addEventListener('click', () => {
+    localStorage.removeItem('token')
+    window.location.assign('index.html')
 })

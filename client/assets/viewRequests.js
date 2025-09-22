@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", async () => {
+    const logout = document.querySelector('#logout')
     const residentName = document.querySelector("#residentName")
     const residentAddress = document.querySelector("#residentAddress")
     const residentPhone = document.querySelector("#residentPhone")
@@ -97,4 +98,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 alert("Failed to save request. Please try again.")
             }
         })
+    logout.addEventListener('click', () => {
+    localStorage.removeItem('token')
+    window.location.assign('index.html')
     })
+})

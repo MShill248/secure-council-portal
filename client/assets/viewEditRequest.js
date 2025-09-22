@@ -1,3 +1,4 @@
+const logout = document.querySelector('#logout')
 document.addEventListener("DOMContentLoaded", async () => {
     const requestForm = document.getElementById("request-form")
     const editBtn = document.querySelector(".btn-success")
@@ -100,4 +101,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     returnBtn.addEventListener("click", () => {
         window.location.href = "requestdashboard.html";
     });
+})
+
+logout.addEventListener('click', () => {
+    localStorage.removeItem('token')
+    window.location.assign('index.html')
 })
