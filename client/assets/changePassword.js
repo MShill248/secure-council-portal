@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     })
 
-    async function verifyOtpAndGetToken(username, otp) {
+    async function verifyOtp(username, otp) {
         const response = await fetch("http://localhost:3000/auth/verify", {
             method: "POST",
             headers: { 
@@ -91,12 +91,28 @@ document.addEventListener("DOMContentLoaded", () => {
         return data.token
     }
 
-    changeBtn.addEventListener("click", async () => {
-        const otp = otpInput.value.trim()
-        const newPassword = newPasswordInput.value.trim()
-        const confirmPassword = confirmPasswordInput.value.trim();
+    async function verifyCurrentPassword(username, password) {
+        const response = await fetch("http://localhost:3000/auth/verifyPassword", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password })
+        })
 
-        if (!otp || !newPassword || !confirmPassword) {
+        const data = await response.json()
+        
+        if (!response.ok) {
+            throw new Error(data.error || "Current password incorrect")
+        }
+
+        return data.token
+    }
+
+    changeBtn.addEventListener("click", async () => {
+        const method = resetMethod.value
+        const newPassword = newPasswordInput.value.trim()
+        const confirmPassword = confirmPasswordInput.value.trim()
+
+        if (!newPassword || !confirmPassword) {
             alert("Please fill in all fields")
             return
         }
@@ -107,14 +123,32 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
-            const token = await verifyOtpAndGetToken(currentUsername.value.trim(), otp)
+            let token
+
+            if (method === "password") {
+                const currentPassword = currentPasswordInput.value.trim()
+                if (!currentPassword) {
+                    alert("Please enter your current password")
+                    return
+                }
+
+                token = await verifyCurrentPassword(currentUsername.value.trim(), currentPassword)
+            } else {
+                const otp = otpInput.value.trim()
+                if (!otp) {
+                    alert("Please enter the OTP")
+                    return
+                }
+
+                token = await verifyOtp(currentUsername.value.trim(), otp)
+            }
 
             const response = await fetch("http://localhost:3000/user/update", {
                 method: "PATCH",
                 headers: {
                     "Accept": "application/json",
                     "Content-Type": "application/json",
-                    "authorization": token,
+                    "Authorization": token
                 },
                 body: JSON.stringify({ password: newPassword })
             })
@@ -128,12 +162,12 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("Password updated successfully. Please log in again.")
             localStorage.clear()
             window.location.assign("index.html")
+
         } catch (err) {
             console.error(err)
             alert(err.message)
         }
     })
-
 
     cancelBtn.addEventListener("click", (e) => {
         e.preventDefault();
