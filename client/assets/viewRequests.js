@@ -35,6 +35,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         residentAddress.value = `${user.address}, ${user.postcode}` 
         residentPhone.value = user.phone_number
         requestDescription.textContent = request.description
+        priority.value = request.priority
 
         const messageResponse = await fetch(`http://localhost:3000/message/request/${requestId}`, options)
         console.log(messageResponse);
