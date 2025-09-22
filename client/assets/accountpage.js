@@ -1,3 +1,4 @@
+const logout = document.querySelector('#logout')
 document.addEventListener("DOMContentLoaded", async () => {
   const form = document.getElementById("account-form");
   const editBtn = document.getElementById("editBtn");

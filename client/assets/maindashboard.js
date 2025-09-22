@@ -7,3 +7,8 @@
     return;
   }
 }) */
+const logout = document.querySelector('#logout')
+logout.addEventListener('click', () => {
+  localStorage.removeItem('token')
+  window.location.assign('index.html')
+})
