@@ -1,3 +1,4 @@
+const logout = document.querySelector('#logout')
 document.addEventListener("DOMContentLoaded", async () => {
   const form = document.getElementById("account-form");
   const editBtn = document.getElementById("editBtn");
@@ -160,6 +161,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         } else {
           alert("Failed to update details.");
         }
+<<<<<<< HEAD
       }
     } catch (e) {
       console.error("Update failed:", e);
@@ -209,3 +211,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 });
+=======
+    })
+    
+})
+logout.addEventListener('click', () => {
+    localStorage.removeItem('token')
+    window.location.assign('index.html')
+})
+>>>>>>> 1a05eef (add logout functionality to all pages)
