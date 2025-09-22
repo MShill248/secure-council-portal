@@ -78,20 +78,22 @@ function create_elements(req) {
         } else {
             type.classList.add("badge", "bg-primary-subtle", "text-primary", "border", "border-primary")
         }
-        type.textContent = req.type
+        type.textContent = req.type.toUpperCase();
         tagRow.appendChild(type);
 
         request.appendChild(title)
         request.appendChild(tagRow)
+        request.appendChild(smallText)
         div.appendChild(request)
         div.appendChild(type)
         parent_div.appendChild(div)
         pendingRequests.appendChild(parent_div)
+
     }
   else if (req.status === 'resolved' || req.status === 'reviewed' || req.status === 'unresolved') {
     const parent = document.createElement('div');
     parent.classList.add("card", "mb-3");
-    parent.addEventListener('click', () => viewedRequests(req.request_id));
+    parent.addEventListener('click', () => viewedRequests(req));
 
     const body = document.createElement('div');
     body.classList.add("card-body", "d-flex", "justify-content-between", "align-items-center");
@@ -135,7 +137,7 @@ function create_elements(req) {
       status.textContent = "UNRESOLVED";
     } else {
       status.classList.add("badge", "bg-info-subtle", "text-info", "border", "border-info");
-      status.textContent = req.status;
+      status.textContent = req.status.toUpperCase();
     }
 
     body.appendChild(left);
@@ -189,9 +191,28 @@ async function loadBorough() {
 }
 
 
-function viewedRequests(e) {
-    localStorage.setItem('request_id', e)
-    window.location.assign("index.html")
+async function viewedRequests(e) {
+  const options = {
+        headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Authorization": localStorage.getItem("token"),
+        }
+    }
+    const response = await fetch('http://localhost:3000/user/account', options)
+    const data = await response.json()
+    user_role = data.user_role
+    localStorage.setItem('request_id', e.request_id)
+    
+    if (user_role == "resident" && e.status == "pending") {
+      window.location.assign(`viewEditRequest.html?id=${e.request_id}`)
+    } else if (user_role == "resident" && (e.status == "reviewed" || e.status == "resolved")){
+      window.location.assign(`viewReviewedResident.html?id=${e.request_id}`)
+    } else if (user_role == "council" && (e.status == "pending" || e.status == "reviewed")) {
+      window.location.assign(`viewRequest.html?id=${e.request_id}`)
+    } else {
+      window.location.assign(`viewResolvedCouncil.html?id=${e.request_id}`)
+    } 
 }
 
 getRequests()

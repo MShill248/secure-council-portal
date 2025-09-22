@@ -1,4 +1,5 @@
 const User = require('../models/User')
+const bcrypt = require('bcrypt');
 
 async function index(req, res) {
     try {
@@ -46,6 +47,10 @@ async function update(req, res) {
         req.body.user_role ||= user.user_role
         console.log(req.body);
         const data = req.body
+        if (req.body.password) {
+            const salt = await bcrypt.genSalt(parseInt(process.env.BCRYPT_SALT_ROUNDS))
+            req.body.password = await bcrypt.hash(req.body.password, salt)
+        }
         const result = await user.update(data)
         res.status(200).json(result)
     } catch (err) {
@@ -80,6 +85,14 @@ async function showUser(req, res) {
         let id = parseInt(req.params.id)
         const user = await User.getOneById(id)
         res.status(200).json(user)
+    } catch (err) {
+        res.status(404).json({ error: err.message })
+    }
+}
+
+async function resetPassword(req, res) {
+    try {
+        
     } catch (err) {
         res.status(404).json({ error: err.message })
     }
