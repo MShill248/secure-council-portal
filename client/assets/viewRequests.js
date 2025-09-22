@@ -71,8 +71,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             receiver_id: receiver_id,
             content: councilMessage.value
             };
-            console.log(resolved);
-            console.log(priority.value)
+            
             const updatedRequest = {
             priority: priority.value,
             status: resolved.checked ? "resolved": "reviewed"

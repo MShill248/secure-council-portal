@@ -1,7 +1,7 @@
 const { ChildProcess } = require('child_process');
 const db = require('../database/connect');
 const encrypter = require('../encrypt/crypto')
-const crypto = require('crypto')
+const crypto = require('crypto');
 
 const key = crypto.scryptSync('secretPassword', 'salt', 32);
 
@@ -25,6 +25,9 @@ class Request {
         if (response.rows.length === 0) {
             throw Error("No requests available")
         }
+        // for(let i = 0; i < response.rows.length; i++) {
+        //     encrypter.decryptRequest(response.rows[i], key)
+        // }
         return response.rows.map((request) => new Request(request))
     }
 
@@ -53,6 +56,9 @@ class Request {
         if (response.rows.length === 0) {
             throw new Error("No requests found")
         }
+        // for(let i = 0; i < response.rows.length; i++) {
+        //     encrypter.decryptRequest(response.rows[i], key)
+        // }
         return response.rows.map((request) => new Request(request))
     }
 
@@ -61,6 +67,9 @@ class Request {
         if (response.rows.length === 0) {
             throw new Error("No requests found")
         }
+        // for(let i = 0; i < response.rows.length; i++) {
+        //     encrypter.decryptRequest(response.rows[i], key)
+        // }
         return response.rows.map((request) => new Request(request))
     }
 
@@ -69,6 +78,9 @@ class Request {
         if (response.rows.length === 0) {
             throw new Error("No requests found")
         }
+        // for(let i = 0; i < response.rows.length; i++) {
+        //     encrypter.decryptRequest(response.rows[i], key)
+        // }
         return response.rows.map((request) => new Request(request))
     }
 
@@ -85,6 +97,9 @@ class Request {
         if (response.rows.length === 0) {
             throw new Error("No requests found")
         }
+        // for(let i = 0; i < response.rows.length; i++) {
+        //     encrypter.decryptRequest(response.rows[i], key)
+        // }
         return response.rows.map((request) => new Request(request))
     }
 
@@ -110,8 +125,11 @@ class Request {
     async update(data){
         const { title, description, status, category, priority, type, updated_at } = data
 
+        //const encryptedData = encrypter.encryptArray([title, description, status, category])
+        const encryptedData = [title, description, status, category]
+
         const response = await db.query("UPDATE requests SET title = COALESCE($1, title), description = COALESCE($2, description), status = COALESCE($3, status), category = COALESCE($4, category), priority = COALESCE($5, priority), type = COALESCE($6, type), updated_at = COALESCE($7, updated_at) WHERE request_id = $8 RETURNING *;",
-            [title, description, status, category, priority, type, updated_at, this.request_id])
+            [encryptedData[0], encryptedData[1], encryptedData[2], encryptedData[3], priority, type, updated_at, this.request_id])
         if (response.rows.length !== 1) {
             throw Error("Unable to update request")
         }

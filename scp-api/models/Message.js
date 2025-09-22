@@ -1,4 +1,8 @@
 const db = require('../database/connect');
+const encrypter = require('../encrypt/crypto');
+const crypto = require('crypto');
+
+const key = crypto.scryptSync('secretPassword', 'salt', 32);
 
 class Message {
 
@@ -16,6 +20,9 @@ class Message {
         if (response.rows.length === 0) {
             throw Error("No requests available")
         }
+        // for(let i = 0; i < response.rows.length; i++) {
+        //     encrypter.decryptMessage(response.rows[i], key)
+        // }
         return response.rows.map((message) => new Message(message))
     }
 
@@ -24,6 +31,7 @@ class Message {
         if (response.rows.length != 1) {
             throw new Error("Unable to locate request.")
         }
+        //encrypter.decryptMessage(response.rows[0], key)
         return new Message(response.rows[0])
     }
 
@@ -40,6 +48,9 @@ class Message {
         if (response.rows.length === 0) {
             throw new Error("No requests found")
         }
+        // for(let i = 0; i < response.rows.length; i++) {
+        //     encrypter.decryptMessage(response.rows[i], key)
+        // }
         return response.rows.map((message) => new Message(message))
     }
 
@@ -51,8 +62,11 @@ class Message {
             throw Error("A user with this ID does not exist")
         }
 
+        //const encryptedData = encrypter.encryptArray([content])
+        const encryptedData = [content]
+
         let response = await db.query("INSERT INTO messages (request_id, sender_id, receiver_id, content) VALUES ($1, $2, $3, $4) RETURNING *;",
-            [request_id, sender_id, receiver_id, content])
+            [request_id, sender_id, receiver_id, encryptedData[0]])
         if (response.rows.length != 1) {
             throw new Error("Unable to create request.")
         }
@@ -62,8 +76,11 @@ class Message {
     async update(data){
         const {content, timestamp} = data
 
+        //const encryptedData = encrypter.encryptArray([content])
+        const encryptedData = [content]
+
         const response = await db.query("UPDATE messages SET content = COALESCE($1, content), timestamp = COALESCE($2, timestamp) WHERE message_id = $3 RETURNING *;",
-            [content, timestamp, this.message_id])
+            [encryptedData[0], timestamp, this.message_id])
         if (response.rows.length !== 1) {
             throw Error("Unable to update request")
         }
