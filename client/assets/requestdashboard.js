@@ -83,10 +83,12 @@ function create_elements(req) {
 
         request.appendChild(title)
         request.appendChild(tagRow)
+        request.appendChild(smallText)
         div.appendChild(request)
         div.appendChild(type)
         parent_div.appendChild(div)
         pendingRequests.appendChild(parent_div)
+
     }
   else if (req.status === 'resolved' || req.status === 'reviewed' || req.status === 'unresolved') {
     const parent = document.createElement('div');

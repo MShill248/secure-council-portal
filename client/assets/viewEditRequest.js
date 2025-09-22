@@ -99,16 +99,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     })
 
     returnBtn.addEventListener("click", () => {
-<<<<<<< HEAD
-        window.location.href = "requestdashboard.html"
-    })
-=======
         window.location.href = "requestdashboard.html";
     });
-})
 
 logout.addEventListener('click', () => {
     localStorage.removeItem('token')
     window.location.assign('index.html')
->>>>>>> 1a05eef (add logout functionality to all pages)
+})
 })

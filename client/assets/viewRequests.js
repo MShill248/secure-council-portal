@@ -130,4 +130,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     localStorage.removeItem('token')
     window.location.assign('index.html')
     })
+<<<<<<< HEAD
 })
+=======
+})
+>>>>>>> 38a92c9907654b7d8fc02394fff37fd6a78d2443
