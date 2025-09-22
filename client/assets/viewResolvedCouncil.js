@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const requestDescription = document.getElementById("requestDescription")
     const priority = document.querySelector('#Priority')
     const resolved = document.getElementById("resolved")
-    const submitBtn = document.querySelector("#submitBtn")
+    const returnBtn = document.querySelector("#returnBtn")
     const formInputs = document.querySelectorAll("input, select, textarea")
     const councilMessage = document.getElementById("councilMessage")
     const params = new URLSearchParams(window.location.search)
@@ -47,5 +47,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         alert("Could not load request details.")
     }
 
+    returnBtn.addEventListener("click", () => {
+        window.location.href = "requestdashboard.html";
+    });
     
 })
