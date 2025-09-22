@@ -33,7 +33,7 @@ class Request {
         if (response.rows.length != 1) {
             throw new Error("Unable to locate request.")
         }
-        encrypter.decryptRequest(response.rows[0], key)
+        // encrypter.decryptRequest(response.rows[0], key)
         return new Request(response.rows[0])
     }
 
@@ -42,9 +42,9 @@ class Request {
         if (response.rows.length === 0) {
             throw new Error("No requests found")
         }
-        for(let i = 0; i < response.rows.length; i++) {
-            encrypter.decryptRequest(response.rows[i], key)
-        }
+        // for(let i = 0; i < response.rows.length; i++) {
+        //     encrypter.decryptRequest(response.rows[i], key)
+        // }
         return response.rows.map((request) => new Request(request))
     }
 
@@ -96,7 +96,8 @@ class Request {
             throw Error("A user with this ID does not exist")
         }
 
-        const encryptedData = encrypter.encryptArray([title, description, status, category])
+        //const encryptedData = encrypter.encryptArray([title, description, status, category])
+        const encryptedData = [title, description, status, category]
 
         let response = await db.query("INSERT INTO requests (user_id, title, description, status, category, priority, type) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;",
             [user_id,  encryptedData[0], encryptedData[1], encryptedData[2], encryptedData[3], priority, type])
