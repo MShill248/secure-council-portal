@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const requestId = params.get("id")
 
     let receiver_id
+    let existingMessageId = null
 
     try {
         const options = {
@@ -41,7 +42,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.log(messageResponse);
         if (messageResponse.ok) {
             const messageData = await messageResponse.json()
-            console.log(messageData);
+            existingMessageId = messageData[0].message_id
             councilMessage.value = messageData[0].content || ""
         } else {
             console.error("Failed to fetch council message:", messageResponse.statusText)
@@ -78,7 +79,22 @@ document.addEventListener("DOMContentLoaded", async () => {
             status: resolved.checked ? "resolved": "reviewed"
             };
             try {
-                const postOptions = {
+                if (existingMessageId) {
+                    const patchMessageOptions = {
+                        method: "PATCH",
+                    headers: {
+                        "Accept": "application/json",
+                        "Content-Type": "application/json",
+                        "Authorization": localStorage.getItem("token")
+                    },
+                    body: JSON.stringify(updatedMessage)
+                    }
+                    const patchMessageResponse = await fetch(`http://localhost:3000/message/${existingMessageId}`, patchMessageOptions)
+                    if (!patchMessageResponse.ok) {
+                        throw new Error ("Failed to update message")
+                    }
+                } else {
+                    const postOptions = {
                     method: "POST",
                     headers: {
                         "Accept": "application/json",
@@ -89,6 +105,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
                 const postResponse = await fetch(`http://localhost:3000/message/`, postOptions)
                 if (!postResponse.ok) throw new Error("Failed to update request")
+                }
+                
                 
                 const patchOptions = {
                     method: "PATCH",
