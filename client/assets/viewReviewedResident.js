@@ -2,8 +2,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     const requestForm = document.getElementById("request-form")
     const returnBtn = document.querySelector(".btn-outline-secondary")
     const councilMessage = document.getElementById("message")
+    const priority = document.getElementById("priority")
+    const status = document.getElementById("status") 
     const params = new URLSearchParams(window.location.search)
     const requestId = params.get("id")
+
+    priorityMap = {
+        1: "Low",
+        2: "Medium",
+        3: "High"
+    }
+
+    const statusMap = {
+        pending: "Pending",
+        reviewed: "Reviewed",
+        resolved: "Resolved"
+    }
 
     try {
         const options = {
@@ -22,12 +36,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById("description").value = request.description
         document.getElementById("requestType").value = request.type
         document.getElementById("requestCategory").value = request.category
+        priority.value = priorityMap[request.priority] || "Not set"
+        status.value = statusMap[request.status] || "Pending"
 
         const messageResponse = await fetch(`http://localhost:3000/message/request/${requestId}`, options)
-        console.log(messageResponse);
+        
         if (messageResponse.ok) {
             const messageData = await messageResponse.json()
-            console.log(messageData);
             councilMessage.value = messageData[0].content || ""
         } else {
             console.error("Failed to fetch council message:", messageResponse.statusText)
