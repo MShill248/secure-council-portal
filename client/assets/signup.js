@@ -1,22 +1,18 @@
-// assets/signup.js
 document.addEventListener("DOMContentLoaded", function () {
   const formEl = document.querySelector(".signup-form");
   if (!formEl) return;
 
   formEl.addEventListener("submit", async function (e) {
-    // Cross-field check: passwords must match
     const pwd = document.getElementById("password");
     const rePwd = document.getElementById("rePassword");
     if (pwd && rePwd) {
       if (rePwd.value !== pwd.value) {
-        // tell the browser this field is invalid
         rePwd.setCustomValidity("Passwords do not match");
       } else {
         rePwd.setCustomValidity("");
       }
     }
 
-    // Run Bootstrap/native validation
     if (!formEl.checkValidity()) {
       e.preventDefault();
       e.stopPropagation();
@@ -24,7 +20,6 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    // If valid, continue with your existing submit logic
     e.preventDefault();
     formEl.classList.add("was-validated");
 
