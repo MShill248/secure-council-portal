@@ -1,5 +1,6 @@
 document.querySelector('#request-form').addEventListener('submit', registerEvent)
-    
+const logout = document.querySelector('#logout')
+
 async function registerEvent(e){
   
   e.preventDefault()
@@ -35,3 +36,7 @@ async function registerEvent(e){
 
 }
 
+logout.addEventListener('click', () => {
+    localStorage.removeItem('token')
+    window.location.assign('index.html')
+})

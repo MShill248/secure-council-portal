@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", async () => {
+    const logout = document.querySelector('#logout')
     const residentName = document.querySelector("#residentName")
     const residentAddress = document.querySelector("#residentAddress")
     const residentPhone = document.querySelector("#residentPhone")
@@ -35,6 +36,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         residentPhone.value = user.phone_number
         requestDescription.textContent = request.description
 
+        const messageResponse = await fetch(`http://localhost:3000/message/request/${requestId}`, options)
+        console.log(messageResponse);
+        if (messageResponse.ok) {
+            const messageData = await messageResponse.json()
+            console.log(messageData);
+            councilMessage.value = messageData[0].content || ""
+        } else {
+            console.error("Failed to fetch council message:", messageResponse.statusText)
+        }
+
     } catch (error) {
         console.error("Error loading request details:", error)
         alert("Could not load request details.")
@@ -60,8 +71,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             receiver_id: receiver_id,
             content: councilMessage.value
             };
-            console.log(resolved);
-            console.log(priority.value)
+            
             const updatedRequest = {
             priority: priority.value,
             status: resolved.checked ? "resolved": "reviewed"
@@ -97,4 +107,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 alert("Failed to save request. Please try again.")
             }
         })
+    logout.addEventListener('click', () => {
+    localStorage.removeItem('token')
+    window.location.assign('index.html')
     })
+})

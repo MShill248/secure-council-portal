@@ -3,7 +3,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     const cancelBtn = document.querySelector(".btn-danger")
     const currentEmailInput = document.getElementById("EmailAddress")
     const newEmailInput = document.getElementById("NewEmail")
+    const confirmEmailInput = document.getElementById("ConfirmNewEmail")
     const passwordInput = document.getElementById("password")
+    const logout = document.querySelector('#logout')
 
     async function loadUserEmail() {
         try {
@@ -27,10 +29,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     changeBtn.addEventListener("click", async () => {
     const newEmail = newEmailInput.value.trim()
+    const confirmEmail = confirmEmailInput.value.trim()
     const password = passwordInput.value.trim()
 
-    if (!newEmail || !password) {
+    if (!newEmail || !confirmEmail || !password) {
         alert("Please fill in both fields")
+        return
+    }
+
+    if (newEmail !== confirmEmail) {
+        alert("New email addresses don't match")
         return
     }
 
@@ -48,7 +56,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         const response = await fetch("http://localhost:3000/user/update", options)
         const data = await response.json()
 
-        if (!response.ok) throw new Error(data.error || "Failed to update email")
+        if (!response.ok) {
+                throw new Error(data.error || "Failed to update email")
+            }
 
         alert("Email updated successfully. Please log in again.")
         localStorage.clear()
@@ -63,6 +73,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     cancelBtn.addEventListener("click", (e) => {
         e.preventDefault()
         window.location.assign("maindashboard.html")
+    })
+    logout.addEventListener('click', () => {
+        localStorage.removeItem('token')
+        window.location.assign('index.html')
     })
 })
 
