@@ -56,7 +56,6 @@ async function create(req, res) {
             receiver_id,
             content            
         })
-        console.log("hit");
         res.status(201).json(newMessage);
     } catch (err) {
         res.status(400).json({ "error": err.message })

@@ -47,6 +47,22 @@ function decryptRequest(object, key) {
   return;
 }
 
+function decryptMessage(object, key) {
+  object.content = decrypt(object.content, key)
+  return;
+}
+
+function decryptUser(object, key) {
+  object.username = decrypt(object.username, key)
+  object.first_name = decrypt(object.first_name, key)
+  object.last_name = decrypt(object.last_name, key)
+  object.email = decrypt(object.email, key)
+  object.address = decrypt(object.address, key)
+  object.postcode = decrypt(object.postcode, key)
+  object.borough = decrypt(object.borough, key)
+  return;
+}
+
 // Example usage
 // Note: In a real application, use a properly generated and securely stored key
 // const key = crypto.scryptSync('secretPassword', 'salt', 32); // 32 bytes = 256 bits
@@ -61,4 +77,11 @@ function decryptRequest(object, key) {
 // const decrypted = decrypt(encryptedData, key);
 // console.log('Decrypted:', decrypted);
 
-module.exports = {encryptArray, decrypt, decryptRequest}
+module.exports = {
+  encrypt, 
+  encryptArray, 
+  decrypt, 
+  decryptRequest,
+  decryptMessage,
+  decryptUser
+}
