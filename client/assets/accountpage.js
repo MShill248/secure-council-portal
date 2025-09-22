@@ -127,6 +127,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const payload = {
       phone_number: phone ? phone.value.trim() : "",
       address: address ? address.value.trim() : "",
+      postcode: postcode ? postcode.value.trim() : "",
+      borough: borough ? borough.value.trim() : ""
     };
 
     try {
