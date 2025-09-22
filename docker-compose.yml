@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  api:
+    build: ./scp-api
+    container_name: scp-api
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./scp-api/.env
+    depends_on:
+      - db
+
+  db:
+    build: ./scp-db
+    container_name: scp-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: docker
+      POSTGRES_DB: users
