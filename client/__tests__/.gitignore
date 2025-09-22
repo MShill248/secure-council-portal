@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 package.json
 package-lock.json
 node_modules/
 coverage/
+=======
+node_modules
+coverage
+>>>>>>> 76e69b8 (unit tests after merge)

@@ -196,4 +196,8 @@ describe("accountpage.html", () => {
 
 ////viewreq
 
+<<<<<<< HEAD
 ////viewedit req
+=======
+////viewedit req
+>>>>>>> 76e69b8 (unit tests after merge)
