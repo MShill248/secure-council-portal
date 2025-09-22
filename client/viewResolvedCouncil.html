@@ -131,7 +131,7 @@
 
                 <div class="col-md-3">
                     <label for="Priority" class="form-label">Priority level</label>
-                    <select id="Priority" name="Priority" class="form-select" readonly>
+                    <select id="Priority" name="Priority" class="form-select" disabled>
                         <option value="" selected disabled>Select</option>
                         <option value="3">High</option>
                         <option value="2">Medium</option>
@@ -146,7 +146,7 @@
 
             <div class="d-flex justify-content-center mb-3">
                 <label class="d-flex align-items-center border rounded px-3 py-2 small-box">
-                    <input class="form-check-input me-2 custom-checkbox" type="checkbox" id = "resolved" readonly>
+                    <input class="form-check-input me-2 custom-checkbox" type="checkbox" id = "resolved" disabled>
                     Has this request been resolved?
                 </label>
             </div>
@@ -155,8 +155,7 @@
 
         </div>
         <div class="d-flex gap-3 justify-content-center">
-            <button id="cancelBtn" type="button" class="btn btn-outline-secondary">Cancel</button>
-            <button id="submitBtn" type="button" class="btn btn-success">Submit</button>
+            <button id="returnBtn" type="button" class="btn btn-outline-secondary">Return</button>
         </div>
 
         </div>
