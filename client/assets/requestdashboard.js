@@ -83,10 +83,12 @@ function create_elements(req) {
 
         request.appendChild(title)
         request.appendChild(tagRow)
+        request.appendChild(smallText)
         div.appendChild(request)
         div.appendChild(type)
         parent_div.appendChild(div)
         pendingRequests.appendChild(parent_div)
+
     }
   else if (req.status === 'resolved' || req.status === 'reviewed' || req.status === 'unresolved') {
     const parent = document.createElement('div');
@@ -190,8 +192,7 @@ async function loadBorough() {
 
 
 function viewedRequests(e) {
-    localStorage.setItem('request_id', e)
-    window.location.assign("index.html")
+    window.location.assign(`viewEditRequest.html?id=${e}`);
 }
 
 getRequests()
