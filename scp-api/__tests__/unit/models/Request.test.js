@@ -11,7 +11,7 @@ jest.mock("../../../encrypt/crypto", () => ({
   ])
 }));
 
-xdescribe("Request", () => {
+describe("Request", () => {
     beforeEach(() => jest.clearAllMocks())
 
     afterAll(() => jest.resetAllMocks())

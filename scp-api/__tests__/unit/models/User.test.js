@@ -14,7 +14,7 @@ jest.mock("../../../encrypt/crypto", () => ({
   ])
 }));
 
-xdescribe("User", () => {
+describe("User", () => {
   beforeEach(() => jest.clearAllMocks())
 
   afterAll(() => jest.resetAllMocks())
@@ -240,22 +240,22 @@ xdescribe("User", () => {
             expect(result.user_id).toBe(1)
             expect(db.query).toHaveBeenCalledWith("UPDATE users SET username = COALESCE($1, username), first_name = COALESCE($2, first_name), last_name = COALESCE($3, last_name), email = COALESCE($4, email), password = COALESCE($5, password), dob = COALESCE($6, dob), address = COALESCE($7, address), postcode = COALESCE($8, postcode), borough = COALESCE($9, borough), phone_number = COALESCE($10, phone_number), user_role = COALESCE($11, user_role) WHERE user_id = $12 RETURNING *;", 
               [
-                user.username, 
-                user.first_name, 
-                user.last_name, 
-                user.email,
-                // "enc_username",
-                // "enc_first_name",
-                // "enc_last_name",
-                // "enc_email", 
+                // user.username, 
+                // user.first_name, 
+                // user.last_name, 
+                // user.email,
+                "enc_username",
+                "enc_first_name",
+                "enc_last_name",
+                "enc_email", 
                 user.password, 
                 user.dob, 
-                updatedData.address, 
-                updatedData.postcode, 
-                user.borough,
-                // "enc_address",
-                // "enc_postcode",
-                // "enc_borough", 
+                // updatedData.address, 
+                // updatedData.postcode, 
+                // user.borough,
+                "enc_address",
+                "enc_postcode",
+                "enc_borough", 
                 user.phone_number, 
                 user.user_role, 
                 user.user_id])

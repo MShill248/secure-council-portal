@@ -13,7 +13,7 @@ describe("Message", () => {
 
     afterAll(() => jest.resetAllMocks())
 
-    xdescribe('getAll', () => {
+    describe('getAll', () => {
         it('resolves with messagess on successful db query', async () => {
             // ARRANGE
             const mockMessages = [
@@ -52,7 +52,7 @@ describe("Message", () => {
         })
     })
 
-    xdescribe("getOneById", () => {
+    describe("getOneById", () => {
         it("resolves with one instance of message", async () => {
         const mockMessage = { 
             message_id: 1, 
@@ -79,7 +79,7 @@ describe("Message", () => {
         })
     })
 
-    xdescribe('getByRequestId', () => {
+    describe('getByRequestId', () => {
         it('resolves with messages filtered by request_id on successful db query', async () => {
             // ARRANGE
             const request_id = 1
@@ -111,7 +111,7 @@ describe("Message", () => {
         })
     })
 
-    xdescribe("create", () => {
+    describe("create", () => {
         it("creates a message with correct data", async () => {
         const mockMessageData = {  
             request_id: 1, 
@@ -170,7 +170,7 @@ describe("Message", () => {
         })
     })
 
-    xdescribe('update', () => {
+    describe('update', () => {
         it('should return the updated message on successful update', async () => {
             // ARRANGE
             const message = new Message({ 

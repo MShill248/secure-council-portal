@@ -213,5 +213,6 @@ module.exports = {
     verifyOtp,
     sendOtp,
     verifyPassword,
-    sendPdf
+    sendPdf,
+    otpStore
 };
