@@ -2,6 +2,11 @@ const Request = require('../models/Request')
 const User = require('../models/User')
 const jwt = require('jsonwebtoken')
 
+const axios = require("axios")
+const pythonPort = process.env.PYTHON_PORT || 3000
+
+
+
 async function index(req, res) {
     try {
         const requests = await Request.getAll()
@@ -133,6 +138,22 @@ async function destroy(req, res) {
     }
 }
 
+const { aggregateRequestData } = require("../helpers/dataProcessor")
+
+const salesInfo = async (req, res) => {
+  try {
+    const requestData = await Request.getAll()
+    const aggregatedData = aggregateRequestData(requestData)
+    const response = await axios.post(`http://localhost:${pythonPort}/generate-visualisation`, aggregatedData)
+    res.status(200).json({
+      success: true,
+      visualisation: response.data,
+    })
+  } catch (err) {
+    res.status(500).json({ error: err.message })
+  }
+}
+
 module.exports = {
     index,
     showId,
@@ -143,5 +164,6 @@ module.exports = {
     getByRecent,
     create,
     update,
-    destroy
+    destroy,
+    salesInfo
 }
