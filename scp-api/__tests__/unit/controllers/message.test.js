@@ -1,307 +1,302 @@
-const bcrypt = require("bcrypt")
-const jwt = require("jsonwebtoken")
-const nodemailer = require("nodemailer")
+const messageController = require("../../../controllers/message");
+const Message = require("../../../models/Message");
+const User = require("../../../models/User");
 
-const messageController = require("../../../controllers/message")
-const Message = require("../../../models/Message")
-const User = require("../../../models/User")
-
-const mockSend = jest.fn()
-const mockJson = jest.fn()
-const mockEnd = jest.fn()
+const mockSend = jest.fn();
+const mockJson = jest.fn();
+const mockEnd = jest.fn();
 
 const mockStatus = jest.fn(() => ({
   send: mockSend,
   json: mockJson,
   end: mockEnd,
-}))
+}));
 
-const mockRes = { status: mockStatus }
+const mockRes = { status: mockStatus };
 
-describe('User controller', () => {
-    beforeEach(() => jest.clearAllMocks())
-    afterAll(() => jest.resetAllMocks())
+describe("Message controller", () => {
+  beforeEach(() => jest.clearAllMocks());
+  afterAll(() => jest.resetAllMocks());
 
-    describe('index', () => {
-        it('should return messages with a status code 200', async () => {
-            const testMessages = ['message1', 'message2']
-            jest.spyOn(Message, 'getAll').mockResolvedValue(testMessages)
+  describe("index", () => {
+    it("should return messages with a status code 200", async () => {
+      const testMessages = ["message1", "message2"];
+      jest.spyOn(Message, "getAll").mockResolvedValue(testMessages);
 
-            await messageController.index(null, mockRes)
-            
-            expect(Message.getAll).toHaveBeenCalledTimes(1)
-            expect(mockStatus).toHaveBeenCalledWith(200)
-            expect(mockJson).toHaveBeenCalledWith(testMessages)
-        })
+      await messageController.index(null, mockRes);
 
-        it('should return an error upon failure', async () => {
-            jest.spyOn(Message, 'getAll').mockRejectedValue(new Error('Something happened to your db'))
+      expect(Message.getAll).toHaveBeenCalledTimes(1);
+      expect(mockStatus).toHaveBeenCalledWith(200);
+      expect(mockJson).toHaveBeenCalledWith(testMessages);
+    });
 
-            await messageController.index(null, mockRes)
-            
-            expect(Message.getAll).toHaveBeenCalledTimes(1)
-            expect(mockStatus).toHaveBeenCalledWith(500)
-            expect(mockJson).toHaveBeenCalledWith({ error: 'Something happened to your db' })
-            })
-    })
+    it("should return an error upon failure", async () => {
+      jest
+        .spyOn(Message, "getAll")
+        .mockRejectedValue(new Error("Something happened to your db"));
 
-    describe("showId", () => {
-        let testMessage, mockReq
+      await messageController.index(null, mockRes);
 
-        beforeEach(() => {
-            testMessage = {
-                message_id: 1,
-                request_id: 1,
-                sender_id: 1,
-                receiver_id: 2,
-                content: "message",
-                timestamp: new Date()
-            }
-            mockReq = { params: { id: 1 } }
-        })
+      expect(Message.getAll).toHaveBeenCalledTimes(1);
+      expect(mockStatus).toHaveBeenCalledWith(500);
+      expect(mockJson).toHaveBeenCalledWith({
+        error: "Something happened to your db",
+      });
+    });
+  });
 
-        it("should return a user with a 200 status code", async () => {
-            jest.spyOn(Message, "getOneById").mockResolvedValue(new Message(testMessage))
+  describe("showId", () => {
+    let testMessage, mockReq;
 
-            await messageController.showId(mockReq, mockRes)
+    beforeEach(() => {
+      testMessage = {
+        message_id: 1,
+        request_id: 1,
+        sender_id: 1,
+        receiver_id: 2,
+        content: "message",
+        timestamp: new Date(),
+      };
+      mockReq = { params: { id: 1 } };
+    });
 
-            expect(Message.getOneById).toHaveBeenCalledTimes(1)
-            expect(Message.getOneById).toHaveBeenCalledWith(1)
-            expect(mockStatus).toHaveBeenCalledWith(200)
-            expect(mockJson).toHaveBeenCalledWith(new Message(testMessage))
-        })
+    it("should return a message with a 200 status code", async () => {
+      jest
+        .spyOn(Message, "getOneById")
+        .mockResolvedValue(new Message(testMessage));
 
-        it("should return an error if the user is not found", async () => {
-            jest.spyOn(Message, "getOneById").mockRejectedValue(new Error("Message not found"))
+      await messageController.showId(mockReq, mockRes);
 
-            await messageController.showId(mockReq, mockRes)
+      expect(Message.getOneById).toHaveBeenCalledWith(1);
+      expect(mockStatus).toHaveBeenCalledWith(200);
+      expect(mockJson).toHaveBeenCalledWith(new Message(testMessage));
+    });
 
-            expect(Message.getOneById).toHaveBeenCalledTimes(1)
-            expect(Message.getOneById).toHaveBeenCalledWith(1)
-            expect(mockStatus).toHaveBeenCalledWith(404)
-            expect(mockJson).toHaveBeenCalledWith({ error: "Message not found" })
-        })
-    })
+    it("should return an error if the message is not found", async () => {
+      jest
+        .spyOn(Message, "getOneById")
+        .mockRejectedValue(new Error("Message not found"));
 
-    describe("getByRequestId", () => {
-        let testMessage, mockReq
+      await messageController.showId(mockReq, mockRes);
 
-        beforeEach(() => {
-            testMessage = {
-                message_id: 1,
-                request_id: 1,
-                sender_id: 1,
-                receiver_id: 2,
-                content: "message",
-                timestamp: new Date()
-            }
-            mockReq = { params: { request_id: 1 } }
-        })
+      expect(mockStatus).toHaveBeenCalledWith(404);
+      expect(mockJson).toHaveBeenCalledWith({ error: "Message not found" });
+    });
+  });
 
-        it("should return a user with a 200 status code", async () => {
-            jest.spyOn(Message, "getByRequestId").mockResolvedValue(new Message(testMessage))
+  describe("getByRequestId", () => {
+    let testMessage, mockReq;
 
-            await messageController.getByRequestId(mockReq, mockRes)
+    beforeEach(() => {
+      testMessage = {
+        message_id: 1,
+        request_id: 1,
+        sender_id: 1,
+        receiver_id: 2,
+        content: "message",
+        timestamp: new Date(),
+      };
+      mockReq = { params: { request_id: 1 } };
+    });
 
-            expect(Message.getByRequestId).toHaveBeenCalledTimes(1)
-            expect(Message.getByRequestId).toHaveBeenCalledWith(1)
-            expect(mockStatus).toHaveBeenCalledWith(200)
-            expect(mockJson).toHaveBeenCalledWith(new Message(testMessage))
-        })
+    it("should return a message with a 200 status code", async () => {
+      jest
+        .spyOn(Message, "getByRequestId")
+        .mockResolvedValue(new Message(testMessage));
 
-        it("should return an error if the user is not found", async () => {
-            jest.spyOn(Message, "getByRequestId").mockRejectedValue(new Error("Message not found"))
+      await messageController.getByRequestId(mockReq, mockRes);
 
-            await messageController.getByRequestId(mockReq, mockRes)
+      expect(Message.getByRequestId).toHaveBeenCalledWith(1);
+      expect(mockStatus).toHaveBeenCalledWith(200);
+      expect(mockJson).toHaveBeenCalledWith(new Message(testMessage));
+    });
 
-            expect(Message.getByRequestId).toHaveBeenCalledTimes(1)
-            expect(Message.getByRequestId).toHaveBeenCalledWith(1)
-            expect(mockStatus).toHaveBeenCalledWith(500)
-            expect(mockJson).toHaveBeenCalledWith({ error: "Message not found" })
-        })
-    })
+    it("should return an error if the message is not found", async () => {
+      jest
+        .spyOn(Message, "getByRequestId")
+        .mockRejectedValue(new Error("Message not found"));
 
-    describe("create", () => {
-        let testMessage, mockReq
+      await messageController.getByRequestId(mockReq, mockRes);
 
-        beforeEach(() => {
-            testMessage = {
-                request_id: 1,
-                receiver_id: 2,
-                content: "Hello there"
-            }
+      expect(mockStatus).toHaveBeenCalledWith(500);
+      expect(mockJson).toHaveBeenCalledWith({ error: "Message not found" });
+    });
+  });
 
-            mockReq = {
-                body: testMessage,
-                username: "userResident" 
-            }
-        })
+  describe("create", () => {
+    let testMessage, mockReq;
 
-        it("should return a new message with a 201 status code", async () => {
-            const mockUser = { 
-                user_id: 1, 
-                username: "userResident" 
-            }
-            
-            const createdMessage = { ...testMessage, sender_id: mockUser.user_id }
+    beforeEach(() => {
+      testMessage = {
+        message_id: 1,
+        request_id: 1,
+        sender_id: 1,
+        receiver_id: 2,
+        content: "message",
+        timestamp: new Date(),
+      };
+      mockReq = { body: testMessage, username: "userResident" };
+    });
 
-            jest.spyOn(User, "getOneByUsername").mockResolvedValue(mockUser)
-            jest.spyOn(Message, "create").mockResolvedValue(createdMessage)
+    it("should return a new message with a 201 status code", async () => {
+      const mockUser = { user_id: 1, username: "userResident" };
+      const createdMessage = { ...testMessage, sender_id: mockUser.user_id };
 
-            await messageController.create(mockReq, mockRes)
+      jest.spyOn(User, "getOneByUsername").mockResolvedValue(mockUser);
+      jest.spyOn(Message, "create").mockResolvedValue(createdMessage);
 
-            expect(User.getOneByUsername).toHaveBeenCalledTimes(1)
-            expect(User.getOneByUsername).toHaveBeenCalledWith("userResident")
-            expect(Message.create).toHaveBeenCalledTimes(1)
-            expect(Message.create).toHaveBeenCalledWith({...testMessage, sender_id: mockUser.user_id})
-            expect(mockStatus).toHaveBeenCalledWith(201)
-            expect(mockJson).toHaveBeenCalledWith(createdMessage)
-        })
+      await messageController.create(mockReq, mockRes);
 
-        it("should return an error if creation fails", async () => {
-            jest.spyOn(User, "getOneByUsername").mockResolvedValue({ user_id: 1, username: "userResident" })
-            jest.spyOn(Message, "create").mockRejectedValue(new Error("Creation failed"))
+      expect(User.getOneByUsername).toHaveBeenCalledWith("userResident");
+      expect(Message.create).toHaveBeenCalledWith({
+        ...testMessage,
+        sender_id: 1,
+      });
+      expect(mockStatus).toHaveBeenCalledWith(201);
+      expect(mockJson).toHaveBeenCalledWith(createdMessage);
+    });
 
-            await messageController.create(mockReq, mockRes)
+    it("should return an error if creation fails", async () => {
+      jest
+        .spyOn(User, "getOneByUsername")
+        .mockResolvedValue({ user_id: 1, username: "userResident" });
+      jest
+        .spyOn(Message, "create")
+        .mockRejectedValue(new Error("Creation failed"));
 
-            expect(Message.create).toHaveBeenCalledTimes(1)
-            expect(mockStatus).toHaveBeenCalledWith(400)
-            expect(mockJson).toHaveBeenCalledWith({ error: "Creation failed" })
-        })
-    })
+      await messageController.create(mockReq, mockRes);
 
-    describe("update", () => {
-        let testMessage, updatedData, mockReq
+      expect(Message.create).toHaveBeenCalledTimes(1);
+      expect(mockStatus).toHaveBeenCalledWith(400);
+      expect(mockJson).toHaveBeenCalledWith({ error: "Creation failed" });
+    });
+  });
 
-        beforeEach(() => {
-            testMessage = {
-                message_id: 1,
-                request_id: 1,
-                sender_id: 1,
-                receiver_id: 2,
-                content: "Original message",
-                timestamp: new Date("2025-01-01T12:00:00Z")
-            }
+  describe("update", () => {
+    let testMessage, updatedData, mockReq;
 
-            updatedData = {
-                content: "Updated message"
-            }
+    beforeEach(() => {
+      testMessage = {
+        message_id: 1,
+        request_id: 1,
+        sender_id: 1,
+        receiver_id: 2,
+        content: "Original message",
+        timestamp: new Date("2025-01-01T12:00:00Z"),
+      };
+      updatedData = { content: "Updated message" };
+      mockReq = {
+        params: { id: 1 },
+        body: updatedData,
+        username: "userResident",
+      };
+    });
 
-            mockReq = {
-                params: { id: 1 },
-                body: { ...updatedData },
-                username: "userResident" 
-            }
-        })
+    it("should update a message and return it with a 200 status code", async () => {
+      const testMessageInstance = new Message(testMessage);
+      const mockUser = { user_id: 1, username: "userResident" };
 
-        it("should update a message and return it with a 200 status code", async () => {
-            const testMessageInstance = new Message(testMessage)
-            const mockUser = { user_id: 1, username: "userResident" }
+      jest.spyOn(Message, "getOneById").mockResolvedValue(testMessageInstance);
+      jest.spyOn(User, "getOneByUsername").mockResolvedValue(mockUser);
+      jest
+        .spyOn(testMessageInstance, "update")
+        .mockImplementation(async (data) => ({ ...testMessage, ...data }));
 
-            jest.spyOn(Message, "getOneById").mockResolvedValue(testMessageInstance)
-            jest.spyOn(User, "getOneByUsername").mockResolvedValue(mockUser)
-            jest.spyOn(testMessageInstance, "update").mockImplementation(async (data) => {
-                return { ...testMessage, ...data }
-            })
+      await messageController.update(mockReq, mockRes);
 
-            await messageController.update(mockReq, mockRes)
+      expect(testMessageInstance.update).toHaveBeenCalledWith(
+        expect.objectContaining(updatedData)
+      );
+      expect(mockStatus).toHaveBeenCalledWith(200);
+      expect(mockJson).toHaveBeenCalledWith(
+        expect.objectContaining({ content: "Updated message", message_id: 1 })
+      );
+    });
 
-            expect(Message.getOneById).toHaveBeenCalledWith(1)
-            expect(User.getOneByUsername).toHaveBeenCalledWith("userResident")
-            expect(testMessageInstance.update).toHaveBeenCalledWith(expect.objectContaining({ content: "Updated message" }))
-            expect(mockStatus).toHaveBeenCalledWith(200)
-            expect(mockJson).toHaveBeenCalledWith(expect.objectContaining({ content: "Updated message", message_id: 1 }))
-        })
+    it("should return an error if user is not permitted", async () => {
+      const testMessageInstance = new Message(testMessage);
+      const mockUser = { user_id: 99, username: "otherUser" };
 
-        it("should return an error if the user is not permitted to update the message", async () => {
-            const testMessageInstance = new Message(testMessage)
-            const mockUser = { user_id: 99, username: "otherUser" }
+      jest.spyOn(Message, "getOneById").mockResolvedValue(testMessageInstance);
+      jest.spyOn(User, "getOneByUsername").mockResolvedValue(mockUser);
 
-            jest.spyOn(Message, "getOneById").mockResolvedValue(testMessageInstance)
-            jest.spyOn(User, "getOneByUsername").mockResolvedValue(mockUser)
+      await messageController.update(mockReq, mockRes);
 
-            await messageController.update(mockReq, mockRes)
+      expect(mockStatus).toHaveBeenCalledWith(404);
+      expect(mockJson).toHaveBeenCalledWith({
+        error: "User not permitted to update this message",
+      });
+    });
 
-            expect(Message.getOneById).toHaveBeenCalledWith(1)
-            expect(User.getOneByUsername).toHaveBeenCalledWith("userResident")
-            expect(mockStatus).toHaveBeenCalledWith(404)
-            expect(mockJson).toHaveBeenCalledWith({error: "User not permitted to update this message"})
-        })
+    it("should return an error if message not found", async () => {
+      jest
+        .spyOn(Message, "getOneById")
+        .mockRejectedValue(new Error("Message not found"));
 
-        it("should return an error if the message is not found", async () => {
-            jest.spyOn(Message, "getOneById").mockRejectedValue(new Error("Message not found"))
+      await messageController.update(mockReq, mockRes);
 
-            await messageController.update(mockReq, mockRes)
+      expect(mockStatus).toHaveBeenCalledWith(404);
+      expect(mockJson).toHaveBeenCalledWith({ error: "Message not found" });
+    });
+  });
 
-            expect(Message.getOneById).toHaveBeenCalledWith(1)
-            expect(mockStatus).toHaveBeenCalledWith(404)
-            expect(mockJson).toHaveBeenCalledWith({ error: "Message not found" })
-        })
-    })
+  describe("destroy", () => {
+    let testMessage, mockReq;
 
-    describe("destroy", () => {
-        let testMessage, mockReq
+    beforeEach(() => {
+      testMessage = {
+        message_id: 1,
+        request_id: 1,
+        sender_id: 1,
+        receiver_id: 2,
+        content: "Original message",
+        timestamp: new Date("2025-01-01T12:00:00Z"),
+      };
+      mockReq = { params: { id: 1 }, username: "userResident" };
+    });
 
-        beforeEach(() => {
-            testMessage = {
-                message_id: 1,
-                request_id: 1,
-                sender_id: 1,
-                receiver_id: 2,
-                content: "Hello there"
-            }
+    it("should return a 204 status code on successful deletion", async () => {
+      const testMessageInstance = new Message(testMessage);
+      const mockUser = { user_id: 1, username: "userResident" };
 
-            mockReq = {
-                params: { id: 1 },
-                username: "userResident" 
-            }
-        })
+      jest.spyOn(User, "getOneByUsername").mockResolvedValue(mockUser);
+      jest.spyOn(Message, "getOneById").mockResolvedValue(testMessageInstance);
+      jest.spyOn(testMessageInstance, "destroy").mockResolvedValue();
 
-        it("should return a 204 status code on successful deletion", async () => {
-            const testMessageInstance = new Message(testMessage)
-            const mockUser = { user_id: 1, username: "userResident" }
+      await messageController.destroy(mockReq, mockRes);
 
-            jest.spyOn(User, "getOneByUsername").mockResolvedValue(mockUser)
-            jest.spyOn(Message, "getOneById").mockResolvedValue(testMessageInstance)
-            jest.spyOn(testMessageInstance, "destroy").mockResolvedValue()
+      expect(testMessageInstance.destroy).toHaveBeenCalledTimes(1);
+      expect(mockStatus).toHaveBeenCalledWith(204);
+      expect(mockEnd).toHaveBeenCalled();
+    });
 
-            await messageController.destroy(mockReq, mockRes)
+    it("should return an error if user not permitted", async () => {
+      const testMessageInstance = new Message(testMessage);
+      const mockUser = { user_id: 99, username: "otherUser" };
 
-            expect(User.getOneByUsername).toHaveBeenCalledWith("userResident")
-            expect(Message.getOneById).toHaveBeenCalledWith(1)
-            expect(testMessageInstance.destroy).toHaveBeenCalledTimes(1)
-            expect(mockStatus).toHaveBeenCalledWith(204)
-            expect(mockEnd).toHaveBeenCalled()
-        })
+      jest.spyOn(User, "getOneByUsername").mockResolvedValue(mockUser);
+      jest.spyOn(Message, "getOneById").mockResolvedValue(testMessageInstance);
 
-        it("should return an error if the user is not permitted to delete the message", async () => {
-            const testMessageInstance = new Message(testMessage)
-            const mockUser = { user_id: 99, username: "otherUser" }
+      await messageController.destroy(mockReq, mockRes);
 
-            jest.spyOn(User, "getOneByUsername").mockResolvedValue(mockUser)
-            jest.spyOn(Message, "getOneById").mockResolvedValue(testMessageInstance)
+      expect(mockStatus).toHaveBeenCalledWith(404);
+      expect(mockJson).toHaveBeenCalledWith({
+        error: "You are not permitted to delete this message",
+      });
+    });
 
-            await messageController.destroy(mockReq, mockRes)
+    it("should return an error if message not found", async () => {
+      const mockUser = { user_id: 1, username: "userResident" };
 
-            expect(User.getOneByUsername).toHaveBeenCalledWith("userResident")
-            expect(Message.getOneById).toHaveBeenCalledWith(1)
-            expect(mockStatus).toHaveBeenCalledWith(404)
-            expect(mockJson).toHaveBeenCalledWith({error: "You are not permitted to delete this message"})
-        })
+      jest.spyOn(User, "getOneByUsername").mockResolvedValue(mockUser);
+      jest
+        .spyOn(Message, "getOneById")
+        .mockRejectedValue(new Error("Message not found"));
 
-        it("should return an error if the message is not found", async () => {
-            const mockUser = { user_id: 1, username: "userResident" }
+      await messageController.destroy(mockReq, mockRes);
 
-            jest.spyOn(User, "getOneByUsername").mockResolvedValue(mockUser)
-            jest.spyOn(Message, "getOneById").mockRejectedValue(new Error("Message not found"))
-
-            await messageController.destroy(mockReq, mockRes)
-
-            expect(User.getOneByUsername).toHaveBeenCalledWith("userResident")
-            expect(Message.getOneById).toHaveBeenCalledWith(1)
-            expect(mockStatus).toHaveBeenCalledWith(404)
-            expect(mockJson).toHaveBeenCalledWith({ error: "Message not found" })
-        })
-    })
-
-})
+      expect(mockStatus).toHaveBeenCalledWith(404);
+      expect(mockJson).toHaveBeenCalledWith({ error: "Message not found" });
+    });
+  });
+});

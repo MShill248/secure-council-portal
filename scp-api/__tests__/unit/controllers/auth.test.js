@@ -29,7 +29,7 @@ jest.mock("nodemailer", () => ({
     }),
 }))
 
-xdescribe("Auth controller", () => {
+describe("Auth controller", () => {
     beforeEach(() => jest.clearAllMocks())
 
     afterAll(() => jest.resetAllMocks())
