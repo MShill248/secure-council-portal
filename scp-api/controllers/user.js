@@ -90,14 +90,6 @@ async function showUser(req, res) {
     }
 }
 
-async function resetPassword(req, res) {
-    try {
-        
-    } catch (err) {
-        res.status(404).json({ error: err.message })
-    }
-}
-
 module.exports = {
     index,
     showId,

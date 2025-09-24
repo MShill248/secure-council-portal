@@ -1,9 +1,9 @@
-const { Router } = require('express')
+const { Router } = require("express");
 
-const requestController = require('../controllers/request')
-const authenticator = require("../middleware/authenticator")
+const requestController = require("../controllers/request");
+const authenticator = require("../middleware/authenticator");
 
-const requestRouter = Router()
+const requestRouter = Router();
 
 requestRouter.get("/", requestController.index)
 requestRouter.get("/recent", requestController.getByRecent)
