@@ -70,6 +70,7 @@ async function getRequests() {
                 data.map((i) => {
                     create_elements(i)
             })
+            renderSummaryChart()
             }
         }
         else if (user_role == 'council'){
@@ -79,6 +80,7 @@ async function getRequests() {
                 data.map((i) => {
                     create_elements(i)
             })
+            renderSummaryChart()
         }
         }
     }
