@@ -1,4 +1,4 @@
-const Request = require('../models/Request')
+const {Request, RequestBorough} = require('../models/Request')
 const User = require('../models/User')
 const jwt = require('jsonwebtoken')
 
@@ -69,7 +69,7 @@ async function getByPriority(req, res) {
 async function getByCategory(req, res) {
     try {
         const category = req.params.category
-        const requests = await Request.getByCategory(category)
+        const requests = await RequestBorough.getByCategoryBorough(category)
         res.status(200).json(requests)
     } catch (err) {
         console.log(err);
@@ -82,6 +82,19 @@ async function getByRecent(req, res) {
         const requests = await Request.getByRecent()
         res.status(200).json(requests)
     } catch (err) {
+        res.status(500).json({ error: err.message })
+    }
+}
+
+async function getByBorough(req, res) {
+    try {
+        const user_id = req.userId
+        const user = await User.getOneById(user_id)
+        const borough = user.borough
+        const requests = await Request.getByBorough(borough)
+        res.status(200).json(requests)
+    } catch (err) {
+        console.log(err);
         res.status(500).json({ error: err.message })
     }
 }
@@ -101,7 +114,6 @@ async function create(req, res) {
             priority,
             type
         })
-        console.log("hit");
         res.status(201).json(newRequest);
     } catch (err) {
         res.status(400).json({ "error": err.message })
@@ -154,6 +166,25 @@ const salesInfo = async (req, res) => {
   }
 }
 
+async function mockCreate(req, res) {
+    try {
+        const { title, description, status, category, priority, type } = req.body
+        const user_id = req.params.id
+        console.log("hit");
+        const newRequest = await Request.create({
+            user_id,
+            title,
+            description,
+            status,
+            category, 
+            priority,
+            type
+        })
+        res.status(201).json(newRequest);
+    } catch (err) {
+        res.status(400).json({ "error": err.message })
+    }
+}
 module.exports = {
     index,
     showId,
@@ -165,5 +196,7 @@ module.exports = {
     create,
     update,
     destroy,
-    salesInfo
+    salesInfo,
+    mockCreate,
+    getByBorough
 }

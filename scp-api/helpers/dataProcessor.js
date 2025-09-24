@@ -15,9 +15,8 @@ const aggregateRequestData = (requestData) => {
   
     const x = [];
     const y = [];
-    
+    console.log(aggregated['waste-collection']);
     Object.entries(aggregated).forEach(entry => {
-      console.log(entry);
       x.push(entry[0]); 
       y.push(entry[1].total);                  
     });

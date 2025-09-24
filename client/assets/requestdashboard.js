@@ -1,9 +1,11 @@
 const pendingRequests = document.querySelector('#pending-requests')
 const resolvedRequests = document.querySelector('#resolved-requests')
 const logout = document.querySelector('#logout')
+pendingRequests.classList.add('fixed-content')
 
 async function getRequests() {
     let user_role
+    let borough
     try {
         const options = {
             headers: {
@@ -15,6 +17,7 @@ async function getRequests() {
         const response = await fetch('http://localhost:3000/user/account', options)
         const data = await response.json()
         user_role = data.user_role
+        borough = data.borough
     } catch {
         console.error("Error fetching user information:", error);
     }
@@ -36,8 +39,9 @@ async function getRequests() {
             }
         }
         else if (user_role == 'council'){
-            const response = await fetch('http://localhost:3000/request/')
+            const response = await fetch('http://localhost:3000/request/borough', options)
             const data = await response.json()
+            console.log(data);
             if(response.status = 200){
                 data.map((i) => {
                     create_elements(i)

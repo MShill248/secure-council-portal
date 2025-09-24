@@ -103,17 +103,29 @@ class Request {
         return response.rows.map((request) => new Request(request))
     }
 
+    static async getByBorough(borough) {
+        console.log(borough);
+        const response = await db.query("SELECT r.* FROM requests r LEFT JOIN users u ON r.user_id = u.user_id WHERE u.borough = $1;", [borough])
+        if (response.rows.length === 0) {
+            throw new Error("No requests found")
+        }
+        // for(let i = 0; i < response.rows.length; i++) {
+        //     encrypter.decryptRequest(response.rows[i], key)
+        // }
+        return response.rows.map((request) => new Request(request))
+    }
+
     static async create(data) {
         const { user_id, title, description, status, category, priority, type } = data
         const existingUser = await db.query("SELECT user_id FROM users WHERE user_id = $1;", [user_id])
-
+        
         if (existingUser.rows.length === 0) {
             throw Error("A user with this ID does not exist")
         }
 
         //const encryptedData = encrypter.encryptArray([title, description, status, category])
         const encryptedData = [title, description, status, category]
-
+        
         let response = await db.query("INSERT INTO requests (user_id, title, description, status, category, priority, type) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;",
             [user_id,  encryptedData[0], encryptedData[1], encryptedData[2], encryptedData[3], priority, type])
         if (response.rows.length != 1) {
@@ -141,4 +153,21 @@ class Request {
     }
 }
 
-module.exports = Request;
+class RequestBorough extends Request {
+    constructor({request_id, user_id, title, description, status, category, priority, type, borough, created_at, updated_at}) {
+        super({request_id, user_id, title, description, status, category, priority, type, created_at, updated_at});
+        this.borough = borough
+    }
+    static async getByCategoryBorough(category) {
+        const response = await db.query("SELECT r.*, u.borough FROM requests r LEFT JOIN users u ON r.user_id = u.user_id WHERE r.category = $1;", [category])
+        if (response.rows.length === 0) {
+            throw new Error("No requests found")
+        }
+        // for(let i = 0; i < response.rows.length; i++) {
+        //     encrypter.decryptRequest(response.rows[i], key)
+        // }
+        return response.rows.map((request) => new RequestBorough(request))
+    }
+}
+
+module.exports = {Request, RequestBorough};
