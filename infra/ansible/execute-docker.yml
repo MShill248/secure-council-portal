@@ -1,0 +1,152 @@
+---
+# ========= DB HOST: run Postgres as a single container =========
+- hosts: db
+  become: true
+  vars:
+    pg_name: scp-db
+    pg_user: postgres
+    pg_pass: docker
+    pg_db:   users
+    pg_port: "5432"
+  tasks:
+    - name: Update all system packages
+      yum:
+        name: "*"
+        state: latest
+      become: true
+    - name: Enable docker topic (Amazon Linux 2)
+      command: amazon-linux-extras enable docker
+      args:
+        creates: /etc/yum.repos.d/amzn2-extras.repo
+    - name: Install Docker engine
+      yum:
+        name: docker
+        state: present
+        update_cache: yes
+    - name: Start & enable Docker
+      service:
+        name: docker
+        state: started
+        enabled: yes
+    - name: Add ec2-user to docker group
+      user:
+        name: ec2-user
+        groups: docker
+        append: yes
+    - name: Run Postgres container on DB host
+      community.docker.docker_container:
+        name: "{{ pg_name }}"
+        image: postgres:14
+        restart_policy: always
+        state: started
+        ports:
+          - "{{ pg_port }}:5432"
+        env:
+          POSTGRES_USER: "{{ pg_user }}"
+          POSTGRES_PASSWORD: "{{ pg_pass }}"
+          POSTGRES_DB: "{{ pg_db }}"
+# ========= API HOST: build & run your Node API with Compose v2 =====
+- hosts: api
+  become: true
+  vars:
+    app_dir: /home/ec2-user/app
+  tasks:
+    - name: Update all system packages
+      yum:
+        name: "*"
+        state: latest
+      become: true
+    - name: Enable docker topic (Amazon Linux 2)
+      command: amazon-linux-extras enable docker
+      args:
+        creates: /etc/yum.repos.d/amzn2-extras.repo
+    - name: Install Docker engine and git
+      yum:
+        name:
+          - docker
+          - git
+        state: present
+        update_cache: yes
+    - name: Start & enable Docker
+      service:
+        name: docker
+        state: started
+        enabled: yes
+    - name: Add ec2-user to docker group
+      user:
+        name: ec2-user
+        groups: docker
+        append: yes
+    # --- Install Docker Compose v2 CLI plugin (no Python deps) ---
+    - name: Ensure docker CLI plugins dir exists
+      file:
+        path: /usr/local/lib/docker/cli-plugins
+        state: directory
+        mode: "0755"
+    - name: Pick Compose v2 download URL for this arch
+      set_fact:
+        compose_url: >-
+          {{ 'https://github.com/docker/compose/releases/download/v2.27.0/docker-compose-linux-x86_64'
+             if ansible_architecture in ['x86_64','amd64']
+             else 'https://github.com/docker/compose/releases/download/v2.27.0/docker-compose-linux-aarch64' }}
+    - name: Download docker compose v2 plugin
+      get_url:
+        url: "{{ compose_url }}"
+        dest: /usr/local/lib/docker/cli-plugins/docker-compose
+        mode: "0755"
+    - name: Verify docker compose plugin
+      command: docker compose version
+      register: compose_ver
+      changed_when: false
+    # --- Put your app on the box ---
+    - name: Ensure app dir exists
+      file:
+        path: "{{ app_dir }}"
+        state: directory
+        owner: ec2-user
+        group: ec2-user
+        mode: "0755"
+    - name: Copy API source (scp-api) to server (fast rsync, excludes)
+      become: false            # <-- FIX: no sudo on localhost
+      delegate_to: localhost
+      synchronize:
+        src: "{{ playbook_dir }}/../../scp-api/"
+        dest: "{{ app_dir }}/scp-api/"
+        recursive: yes
+        delete: yes
+        rsync_opts:
+          - "--exclude=node_modules/"
+          - "--exclude=coverage/"
+          - "--exclude=.git/"
+          - "--exclude=.vscode/"
+    - name: Drop API env file into place
+      copy:
+        src: files/app.env
+        dest: "{{ app_dir }}/scp-api/.env"
+        owner: ec2-user
+        group: ec2-user
+        mode: "0640"
+    - name: Copy docker-compose.yml used on API host
+      copy:
+        src: docker-compose.yml
+        dest: "{{ app_dir }}/docker-compose.yml"
+        owner: ec2-user
+        group: ec2-user
+        mode: "0644"
+    # --- Get DB private IP safely (even if facts aren't cached) ---
+    - name: Gather facts from DB host
+      setup:
+      delegate_to: "{{ groups['db'][0] }}"
+      run_once: true
+      register: dbfacts
+    - name: Store DB private IP for this play
+      set_fact:
+        db_private_ip: "{{ dbfacts.ansible_facts.ansible_default_ipv4.address }}"
+      run_once: true
+    # --- Run it with Compose v2 ---
+    - name: Launch API stack (build + up -d)
+      environment:
+        DB_PRIVATE_IP: "{{ db_private_ip }}"
+      command: docker compose up -d --build
+      args:
+        chdir: "{{ app_dir }}"

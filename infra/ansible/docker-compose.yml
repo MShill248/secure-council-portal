@@ -1,0 +1,12 @@
+version: "3.8"
+services:
+  api:
+    build: ./scp-api
+    container_name: scp-api
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./scp-api/.env
+    environment:
+      DB_HOST: ${DB_PRIVATE_IP}
+    restart: always

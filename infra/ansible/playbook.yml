@@ -1,0 +1,73 @@
+---
+- name: Deploy Secure Council Portal
+  hosts: api
+  become: yes
+  vars:
+    app_dir: /home/ec2-user/app
+    repo_url: "https://github.com/YOUR_GITHUB_ORG/secure-council-portal.git"  # <-- set this
+    repo_version: "devops-setup"   # or "main" or the tag/branch you want
+  tasks:
+    - name: Install Docker engine and git
+      yum:
+        name:
+          - docker
+          - git
+          - python3-pip
+        state: present
+        update_cache: yes
+    # docker-compose v1 via pip (works on Amazon Linux 2)
+    - name: Ensure docker-compose (v1) is on PATH (/usr/bin/docker-compose)
+      pip:
+        name: docker-compose
+        executable: pip3
+      register: pip_compose
+    - name: Symlink docker-compose to /usr/bin (if needed)
+      file:
+        src: /usr/local/bin/docker-compose
+        dest: /usr/bin/docker-compose
+        state: link
+      when: pip_compose is changed or (pip_compose is succeeded)
+    - name: Add ec2-user to docker group (no sudo needed)
+      user:
+        name: ec2-user
+        groups: docker
+        append: yes
+    - name: Start and enable Docker
+      service:
+        name: docker
+        state: started
+        enabled: true
+    - name: Create app directory tree
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: ec2-user
+        group: ec2-user
+        mode: "0755"
+      loop:
+        - "{{ app_dir }}"
+        - "{{ app_dir }}/scp-api"
+        - "{{ app_dir }}/scp-db"
+    # ---------- Option B: clone the repo on the instance ----------
+    - name: Clone application repo
+      git:
+        repo: "{{ repo_url }}"
+        dest: "{{ app_dir }}"
+        version: "{{ repo_version }}"
+        accept_hostkey: yes
+        update: yes
+      become_user: ec2-user
+    # Only copy the small env file you already prepared
+    - name: Copy API .env
+      copy:
+        src: files/app.env
+        dest: "{{ app_dir }}/scp-api/.env"
+        owner: ec2-user
+        group: ec2-user
+        mode: "0640"
+    - name: Launch Docker Compose stack
+      command: docker-compose up -d
+      args:
+        chdir: "{{ app_dir }}"
+      environment:
+        COMPOSE_PROJECT_NAME: scp
