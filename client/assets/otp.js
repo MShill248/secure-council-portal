@@ -30,7 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log("Token saved to localStorage:", localStorage.getItem('token'));
 
         // Redirect after saving
-        alert('Successfully Logged In');
         window.location.assign("maindashboard.html");
       } else {
         alert(data.error || "Login failed: no token received");

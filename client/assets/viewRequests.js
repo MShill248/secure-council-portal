@@ -50,7 +50,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     } catch (error) {
         console.error("Error loading request details:", error)
-        alert("Could not load request details.")
     }
 
     let isEditing = false
@@ -73,7 +72,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             receiver_id: receiver_id,
             content: councilMessage.value
             };
-            
+        
             const updatedRequest = {
             priority: priority.value,
             status: resolved.checked ? "resolved": "reviewed"
@@ -120,7 +119,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const patchResponse = await fetch(`http://localhost:3000/request/${requestId}`, patchOptions)
                 if (!patchResponse.ok) throw new Error("Failed to update request")
 
-                alert("Message sent successfully")
             } catch (err) {
                 console.error("Error saving request:", err)
                 alert("Failed to save request. Please try again.")

@@ -212,3 +212,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 });
+logout.addEventListener('click', () => {
+    localStorage.removeItem('token')
+    window.location.assign('index.html')
+})
