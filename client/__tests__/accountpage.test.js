@@ -1,9 +1,10 @@
 ///accountp
+const { renderDOM } = require("./helpers");
 describe("accountpage.html", () => {
   let dom;
   let document;
 
-   beforeEach(async () => {
+ beforeEach(async () => {
     dom = await renderDOM("../accountpage.html");
     document = dom.window.document;
   }); 

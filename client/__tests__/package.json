@@ -11,7 +11,8 @@
   "jest": {
     "testPathIgnorePatterns": [
       "./__tests__/helpers.js",
-      "/node_modules/"
+      "/node_modules/",
+      "/coverage/"
     ]
   }
 }
