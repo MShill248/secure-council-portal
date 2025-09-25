@@ -1,4 +1,4 @@
-const Request = require("../../../models/Request")
+const {Request, RequestBorough } = require("../../../models/Request")
 const db = require("../../../database/connect")
 const encrypter = require("../../../encrypt/crypto")
 

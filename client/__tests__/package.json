@@ -6,7 +6,8 @@
   },
   "scripts": {
     "dev": "live-server",
-    "test": "jest --watchAll --verbose"
+    "test": "jest --watchAll --verbose",
+    "coverage": "jest --coverage"
   },
   "jest": {
     "testPathIgnorePatterns": [

@@ -5,7 +5,7 @@ const axios = require("axios")
 
 const requestController = require("../../../controllers/request")
 const User = require("../../../models/User")
-const Request = require("../../../models/Request")
+const {Request, RequestBorough} = require("../../../models/Request")
 
 const mockSend = jest.fn()
 const mockJson = jest.fn()

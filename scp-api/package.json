@@ -6,7 +6,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon -L index.js",
     "unitTests": "jest __tests__/unit/ --watchAll --verbose --coverage",
-    "integrationTests": "jest __tests__/integration/ --watchAll --detectOpenHandles --runInBand --verbose"
+    "integrationTests": "jest __tests__/integration/ --watchAll --detectOpenHandles --runInBand --verbose",
+    "coverage": "jest __tests__/ --coverage"
   },
   "author": "",
   "license": "ISC",
