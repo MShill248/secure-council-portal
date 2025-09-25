@@ -35,7 +35,6 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log("Username saved to localStorage:", localStorage.getItem('username'));
 
         // Redirect after saving
-        alert('OTP has been sent');
         window.location.assign("otp.html");
       } else {
         alert(data.error || "Login failed: no username received");

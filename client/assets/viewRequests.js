@@ -120,7 +120,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const patchResponse = await fetch(`http://localhost:3000/request/${requestId}`, patchOptions)
                 if (!patchResponse.ok) throw new Error("Failed to update request")
 
-                alert("Message sent successfully")
             } catch (err) {
                 console.error("Error saving request:", err)
                 alert("Failed to save request. Please try again.")
