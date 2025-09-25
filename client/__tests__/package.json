@@ -1,23 +1,17 @@
 {
-  "name": "__tests__",
-  "version": "1.0.0",
-  "main": "helpers.js",
+  "devDependencies": {
+    "jest": "^29.5.0",
+    "jsdom": "^21.1.2",
+    "live-server": "^1.2.2"
+  },
   "scripts": {
     "dev": "live-server",
-    "test": "jest --watchAll",
-    "coverage": "jest --coverage"
+    "test": "jest --watchAll --verbose"
   },
   "jest": {
     "testPathIgnorePatterns": [
-      "./__tests__/helpers.js"
+      "./__tests__/helpers.js",
+      "/node_modules/"
     ]
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
-  "devDependencies": {
-    "jest": "^30.1.3",
-    "jsdom": "^21.1.2"
   }
 }

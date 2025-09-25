@@ -1,3 +1,7 @@
+const { TextEncoder, TextDecoder } = require("util");
+global.TextEncoder = global.TextEncoder || TextEncoder;
+global.TextDecoder = global.TextDecoder || TextDecoder;
+
 const path = require('path');
 const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
@@ -6,8 +10,9 @@ const renderDOM = async (filename) => {
     const filePath = path.join(process.cwd(), filename);
     const dom = await JSDOM.fromFile(filePath, {
         runScripts: 'dangerously',
-        resources: 'usable'        
+        resources: 'usable',      
     });
+
 
     return new Promise((resolve, _) => {
         dom.window.document.addEventListener('DOMContentLoaded', () => {
@@ -18,5 +23,5 @@ const renderDOM = async (filename) => {
 
 module.exports = {
     renderDOM,
-};
+}; 
 // boilerplate for testing
