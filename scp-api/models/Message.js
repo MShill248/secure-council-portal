@@ -18,7 +18,7 @@ class Message {
     static async getAll() {
         const response = await db.query("SELECT * FROM messages ORDER BY timestamp DESC;")
         if (response.rows.length === 0) {
-            throw Error("No requests available")
+            throw Error("No messages available")
         }
         // for(let i = 0; i < response.rows.length; i++) {
         //     encrypter.decryptMessage(response.rows[i], key)
@@ -27,9 +27,9 @@ class Message {
     }
 
     static async getOneById(id) {
-        const response = await db.query("SELECT * FROM messages WHERE message_id = $1", [id]);
+        const response = await db.query("SELECT * FROM messages WHERE message_id = $1;", [id]);
         if (response.rows.length != 1) {
-            throw new Error("Unable to locate request.")
+            throw new Error("Unable to locate message.")
         }
         //encrypter.decryptMessage(response.rows[0], key)
         return new Message(response.rows[0])
@@ -44,9 +44,9 @@ class Message {
     // }
     
     static async getByRequestId(request_id) {
-        const response = await db.query("SELECT * FROM messages WHERE request_id = $1", [request_id]);
+        const response = await db.query("SELECT * FROM messages WHERE request_id = $1;", [request_id]);
         if (response.rows.length === 0) {
-            throw new Error("No requests found")
+            throw new Error("No messages found")
         }
         // for(let i = 0; i < response.rows.length; i++) {
         //     encrypter.decryptMessage(response.rows[i], key)
@@ -62,21 +62,25 @@ class Message {
             throw Error("A user with this ID does not exist")
         }
 
-        //const encryptedData = encrypter.encryptArray([content])
+        // const encryptedData = encrypter.encryptArray([content])
         const encryptedData = [content]
-
-        let response = await db.query("INSERT INTO messages (request_id, sender_id, receiver_id, content) VALUES ($1, $2, $3, $4) RETURNING *;",
-            [request_id, sender_id, receiver_id, encryptedData[0]])
-        if (response.rows.length != 1) {
+        
+        try {
+            let response = await db.query("INSERT INTO messages (request_id, sender_id, receiver_id, content) VALUES ($1, $2, $3, $4) RETURNING *;",
+                [request_id, sender_id, receiver_id, encryptedData[0]])
+            if (response.rows.length != 1) {
+                throw new Error("Unable to create request.")
+            }
+            return new Message(response.rows[0])    
+        } catch (err) {
             throw new Error("Unable to create request.")
         }
-        return new Message(response.rows[0])
     }
 
     async update(data){
         const {content, timestamp} = data
 
-        //const encryptedData = encrypter.encryptArray([content])
+        // const encryptedData = encrypter.encryptArray([content])
         const encryptedData = [content]
 
         const response = await db.query("UPDATE messages SET content = COALESCE($1, content), timestamp = COALESCE($2, timestamp) WHERE message_id = $3 RETURNING *;",

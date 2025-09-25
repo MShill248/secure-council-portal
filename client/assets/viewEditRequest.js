@@ -88,7 +88,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 editBtn.classList.replace("btn-primary", "btn-success")
                 isEditing = false
 
-                alert("Request updated successfully")
             } catch (err) {
                 console.error("Error saving request:", err)
                 alert("Failed to save request. Please try again.")

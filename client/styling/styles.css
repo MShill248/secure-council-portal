@@ -17,3 +17,33 @@
 }
 
 .form-label { font-weight: 700; }
+
+.critical {
+  fill: #961900
+}
+
+.severe {
+  fill: #D62A00
+}
+
+.moderate {
+  fill: #FF4A1A
+}
+
+.minor {
+  fill: #FF8D73
+}
+
+.color-box{
+  width: 15px;
+  height: 15px;
+  display: inline-block;
+  background-color: #ccc;
+  left: 5px;
+  top: 5px
+}
+
+.mycontainer{
+  width: 100%;
+  overflow: auto;
+}
