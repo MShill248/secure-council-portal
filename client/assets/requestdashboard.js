@@ -1,9 +1,10 @@
-const pendingRequests = document.querySelector('#pending-requests')
-const resolvedRequests = document.querySelector('#resolved-requests')
-const logout = document.querySelector('#logout')
-pendingRequests.classList.add('fixed-content')
+const pendingRequests = document.querySelector("#pending-requests");
+const resolvedRequests = document.querySelector("#resolved-requests");
+const logout = document.querySelector("#logout");
 const summaryChartEl = document.querySelector("#summaryChart");
+
 const statusTally = { pending: 0, reviewed: 0, resolved: 0 };
+let currentRole = null;
 
 function resetTally() {
   statusTally.pending = 0;
@@ -13,14 +14,16 @@ function resetTally() {
 
 function renderSummaryChart() {
   if (!summaryChartEl) return;
-
   const labels = ["Pending", "Reviewed", "Resolved"];
-  const values = [statusTally.pending, statusTally.reviewed, statusTally.resolved];
+  const values = [
+    statusTally.pending,
+    statusTally.reviewed,
+    statusTally.resolved,
+  ];
 
   if (window.Plotly) {
     const trace = { x: labels, y: values, type: "bar" };
     const layout = {
-      // title: "Request Status Summary",
       margin: { t: 40, r: 20, b: 60, l: 40 },
       yaxis: { rangemode: "tozero", dtick: 1 },
     };
@@ -35,58 +38,129 @@ function renderSummaryChart() {
 }
 
 async function getRequests() {
-    let user_role
-    let borough
-    try {
-        const options = {
-            headers: {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-            "Authorization": localStorage.getItem("token"),
-            }
-        }
-        const response = await fetch('http://localhost:3000/user/account', options)
-        const data = await response.json()
-        user_role = data.user_role
-        borough = data.borough
-    } catch {
-        console.error("Error fetching user information:", error);
+  let borough = null;
+
+  // Load account (role + borough)
+  try {
+    const options = {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("token"),
+      },
+    };
+    const response = await fetch("http://localhost:3000/user/account", options);
+    const data = await response.json();
+    currentRole = data.user_role;
+    borough = data.borough;
+
+    const bEl = document.getElementById("user-borough");
+    if (bEl) bEl.textContent = borough || "Not set";
+
+    const rEl = document.getElementById("user-role");
+    if (rEl) rEl.textContent = currentRole || "—";
+
+    const todayEl = document.getElementById("today-date");
+    if (todayEl) {
+      todayEl.textContent = new Date().toLocaleDateString(undefined, {
+        weekday: "short",
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      });
     }
-    try{
-        const options = {
-            headers: {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-            "Authorization": localStorage.getItem("token"),
-            }
-        }
-        
-        resetTally();
-        
-        if (user_role == 'resident'){
-            const response = await fetch('http://localhost:3000/request/user', options)
-            const data = await response.json()
-            if(response.status = 200){
-                data.map((i) => {
-                    create_elements(i)
-            })
-            renderSummaryChart()
-            }
-        }
-        else if (user_role == 'council'){
-            const response = await fetch('http://localhost:3000/request/borough', options)
-            const data = await response.json()
-            if(response.status = 200){
-                data.map((i) => {
-                    create_elements(i)
-            })
-            renderSummaryChart()
-        }
-        }
+  } catch (error) {
+    console.error("Error fetching user information:", error);
+  }
+
+  // Load requests for columns + chart
+  try {
+    const options = {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("token"),
+      },
+    };
+    resetTally();
+
+    if (currentRole === "resident") {
+      const response = await fetch(
+        "http://localhost:3000/request/user",
+        options
+      );
+      const data = await response.json();
+      if (response.ok) {
+        data.forEach((i) => create_elements(i));
+        renderSummaryChart();
+      }
+    } else {
+      // council (or others) — load borough-level list for columns/chart
+      const response = await fetch(
+        "http://localhost:3000/request/borough",
+        options
+      );
+      const data = await response.json();
+      if (response.ok) {
+        data.forEach((i) => create_elements(i));
+        renderSummaryChart();
+      }
     }
-    catch (error) {
-        console.error("Error fetching requests:", error);
+
+    // After we load visible requests, populate the Data Info cards
+    computeDataInfo();
+  } catch (error) {
+    console.error("Error fetching requests:", error);
+  }
+}
+
+// Data Info: totals & resolved percentage
+async function computeDataInfo() {
+  const headers = {
+    Accept: "application/json",
+    Authorization: localStorage.getItem("token"),
+  };
+
+  // Total users (best-effort)
+  let totalUsers = "—";
+  try {
+    const resU = await fetch("http://localhost:3000/user", { headers });
+    if (resU.ok) {
+      const users = await resU.json();
+      totalUsers = Array.isArray(users) ? users.length : users?.count ?? "—";
     }
+  } catch {}
+
+  // Total requests (try platform → borough → user)
+  let allRequests = [];
+  try {
+    let resR = await fetch("http://localhost:3000/request/", { headers });
+    if (!resR.ok)
+      resR = await fetch("http://localhost:3000/request/borough", { headers });
+    if (!resR.ok)
+      resR = await fetch("http://localhost:3000/request/user", { headers });
+    if (resR.ok) {
+      const data = await resR.json();
+      allRequests = Array.isArray(data) ? data : data?.items ?? [];
+    }
+  } catch {}
+
+  const totalRequests = allRequests.length;
+  const resolvedCount = allRequests.filter(
+    (r) => (r.status || "").toLowerCase() === "resolved"
+  ).length;
+  const resolvedPct = totalRequests
+    ? Math.round((resolvedCount / totalRequests) * 100)
+    : 0;
+
+  updateDataInfoUI(totalUsers, totalRequests, resolvedPct);
+}
+
+function updateDataInfoUI(users, total, pct) {
+  const id = (x) => document.getElementById(x);
+  if (id("stat-users")) id("stat-users").textContent = users;
+  if (id("stat-requests")) id("stat-requests").textContent = total;
+  if (id("stat-resolvedPct")) id("stat-resolvedPct").textContent = pct;
 }
 
 function create_elements(req) {
@@ -95,7 +169,7 @@ function create_elements(req) {
   else if (s === "reviewed") statusTally.reviewed++;
   else if (s === "resolved") statusTally.resolved++;
 
-  if (req.status == "pending") {
+  if (req.status === "pending") {
     const parent_div = document.createElement("div");
     parent_div.classList.add("card", "mb-3");
     parent_div.addEventListener("click", () => editRequest(req.request_id));
@@ -122,7 +196,7 @@ function create_elements(req) {
     tagRow.classList.add("d-flex", "gap-2", "mb-1");
 
     const type = document.createElement("span");
-    if (req.type == "service") {
+    if (req.type === "service") {
       type.classList.add(
         "badge",
         "bg-danger-subtle",
@@ -168,12 +242,10 @@ function create_elements(req) {
 
     const left = document.createElement("div");
 
-    // TITLE
     const title = document.createElement("h6");
     title.classList.add("mb-1");
     title.textContent = req.title;
 
-    // REQUEST TYPE BADGE
     const tagRow = document.createElement("div");
     tagRow.classList.add("d-flex", "gap-2", "mb-1");
 
@@ -207,7 +279,6 @@ function create_elements(req) {
     left.appendChild(tagRow);
     left.appendChild(ref);
 
-    // STATUS BADGE
     const status = document.createElement("span");
     if (req.status === "resolved") {
       status.classList.add(
@@ -255,35 +326,11 @@ async function editRequest(e) {
   };
   const response = await fetch("http://localhost:3000/user/account", options);
   const data = await response.json();
-  user_role = data.user_role;
-  if (user_role == "resident") {
+  const user_role = data.user_role;
+  if (user_role === "resident")
     window.location.assign(`viewEditRequest.html?id=${e}`);
-  } else if (user_role == "council") {
+  else if (user_role === "council")
     window.location.assign(`viewRequest.html?id=${e}`);
-  }
-}
-
-async function loadBorough() {
-  const boroughDisplay = document.getElementById("user-borough");
-  if (!boroughDisplay) return;
-
-  try {
-    const options = {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        authorization: localStorage.getItem("token"),
-      },
-    };
-    const response = await fetch("http://localhost:3000/user/account", options);
-    if (!response.ok) throw new Error("Failed to fetch user details");
-    const user = await response.json();
-    boroughDisplay.textContent =
-      user && user.borough ? user.borough : "Not set";
-  } catch (error) {
-    console.error("Error loading user details:", error);
-    boroughDisplay.textContent = "Not set";
-  }
 }
 
 async function viewedRequests(e) {
@@ -296,19 +343,19 @@ async function viewedRequests(e) {
   };
   const response = await fetch("http://localhost:3000/user/account", options);
   const data = await response.json();
-  user_role = data.user_role;
+  const user_role = data.user_role;
   localStorage.setItem("request_id", e.request_id);
 
-  if (user_role == "resident" && e.status == "pending") {
+  if (user_role === "resident" && e.status === "pending") {
     window.location.assign(`viewEditRequest.html?id=${e.request_id}`);
   } else if (
-    user_role == "resident" &&
-    (e.status == "reviewed" || e.status == "resolved")
+    user_role === "resident" &&
+    (e.status === "reviewed" || e.status === "resolved")
   ) {
     window.location.assign(`viewReviewedResident.html?id=${e.request_id}`);
   } else if (
-    user_role == "council" &&
-    (e.status == "pending" || e.status == "reviewed")
+    user_role === "council" &&
+    (e.status === "pending" || e.status === "reviewed")
   ) {
     window.location.assign(`viewRequest.html?id=${e.request_id}`);
   } else {
@@ -317,7 +364,6 @@ async function viewedRequests(e) {
 }
 
 getRequests();
-loadBorough();
 
 logout.addEventListener("click", () => {
   localStorage.removeItem("token");

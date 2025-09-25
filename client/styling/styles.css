@@ -47,3 +47,5 @@
   width: 100%;
   overflow: auto;
 }
+
+.form-label i { vertical-align: -0.1em; }

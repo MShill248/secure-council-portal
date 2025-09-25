@@ -97,65 +97,118 @@
   </nav>
 
   <header class="container my-4">
-    <h1 class="text-center">Requests Dashboard</h1>
+    <div class="card shadow-sm">
+      <div class="card-body text-center">
+        <h1 class="h3 fw-bold mb-0"><i class="bi bi-speedometer2 me-2"></i>REQUEST DASHBOARD</h1>
+      </div>
+    </div>
   </header>
 
   <!-- MAIN LAYOUT -->
-  <main class="container-fluid flex-grow-1">
+  <main class="container-fluid flex-grow-1 pb-5">
     <div class="row g-4">
 
-      <!-- BOROUGH COLUMN -->
       <div class="col-12 col-lg-4 d-flex flex-column gap-4">
 
+        <!-- BOROUGH COLUMN -->
         <div class="card flex-fill">
-          <div class="card-body">
-            <div class="alert alert-secondary text-center mb-3 py-2">Selected Borough:</div>
-
-            <div class="mb-3">
-              <div class="form-control-plaintext text-center fw-semibold py-2 border rounded bg-light" id="user-borough"
-                name="user-borough">Not set</div>
+          <div class="card-header bg-white">
+            <h2 class="h6 text-uppercase fw-bold text-center mb-0">
+              <i class="bi bi-geo-alt-fill me-2"></i>Borough
+            </h2>
+          </div>
+          <div class="card-body text-center">
+            <div class="h5 mb-0">
+              <span id="user-borough">Not set</span><span class="text-muted">, London</span>
             </div>
           </div>
         </div>
+        <!-- ADD REQUEST FORM BUTTON -->
         <div>
           <a href="requestForm.html" class="btn btn-success w-100">Add Request</a>
         </div>
 
         <!-- SUMMARY -->
         <div class="card flex-fill">
+          <div class="card-header bg-white">
+            <h2 class="h6 text-uppercase fw-bold text-center mb-0">
+              <i class="bi bi-bar-chart-line me-2"></i>Summary Chart
+            </h2>
+          </div>
+          <p class="text-muted small text-center mt-3 mb-0">
+            This chart shows your current requests by status (Pending, Reviewed, Resolved). It updates automatically
+            as requests move through the workflow.
+          </p>
           <div class="card-body">
-            <h5 class="card-title">Summary Chart</h5>
             <div id="summaryChart" style="height:300px;"><!-- chart renders here --></div>
-            <div class="d-grid gap-2 col-6 mx-auto">
-              <a href="dataDashboard.html" class="btn btn btn-info">View more details</a>
+
+            <div class="d-grid gap-2 col-6 mx-auto mt-3">
+              <a href="dataDashboard.html" class="btn btn-primary">View more details</a>
             </div>
+
           </div>
         </div>
 
+
         <!-- DATA -->
         <div class="card flex-fill">
+          <div class="card-header bg-white">
+            <h2 class="h6 text-uppercase fw-bold text-center mb-0">
+              <i class="bi bi-graph-up-arrow me-2"></i>SCP PLATFORM DATA
+            </h2>
+          </div>
+          <p class="text-muted small text-center mt-3 mb-0">
+            Snapshot of overall usage: total users and requests, plus the percentage of requests resolved.
+          </p>
           <div class="card-body">
-            <h5 class="card-title">Data Info</h5>
-            <p class="card-text">[Key metrics placeholder]</p>
+            <div class="row g-3" id="data-info-cards">
+              <div class="col-12 col-md-4">
+                <div class="border rounded-3 p-3 h-100 text-center">
+                  <div class="mb-2"><i class="bi bi-people display-6 text-secondary"></i></div>
+                  <div class="h4 mb-0" id="stat-users">—</div>
+                  <small class="text-muted">Total Users</small>
+                </div>
+              </div>
+              <div class="col-12 col-md-4">
+                <div class="border rounded-3 p-3 h-100 text-center">
+                  <div class="mb-2"><i class="bi bi-files display-6 text-secondary"></i></div>
+                  <div class="h4 mb-0" id="stat-requests">—</div>
+                  <small class="text-muted">Total Requests</small>
+                </div>
+              </div>
+              <div class="col-12 col-md-4">
+                <div class="border rounded-3 p-3 h-100 text-center">
+                  <div class="mb-2"><i class="bi bi-pie-chart display-6 text-secondary"></i></div>
+                  <div class="h4 mb-0"><span id="stat-resolvedPct">—</span>%</div>
+                  <small class="text-muted">Resolved of Total</small>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
+
       </div>
 
       <!-- PENDING COLUMN -->
       <div class="col-12 col-lg-4">
         <div class="mb-3">
-          <div class="alert alert-secondary text-center mb-0 py-2" role="alert">PENDING: </div>
+          <div class="alert alert-secondary text-center mb-0 py-2 fw-bold" role="alert">
+            <i class="bi bi-hourglass-split me-1"></i> PENDING:
+          </div>
         </div>
-        <div class="bg-secondary-subtle rounded-3 p-3" id="pending-requests" style = "height: 700px ;overflow-y: scroll;">
+        <div class="bg-secondary-subtle rounded-3 p-3" id="pending-requests" style="height:700px;overflow-y:auto;">
         </div>
       </div>
 
-      <!-- RESOLVED COLUMN -->
+      <!-- REVIEWED COLUMN -->
       <div class="col-12 col-lg-4">
         <div class="mb-3">
-          <div class="alert alert-secondary text-center mb-0 py-2" role="alert">REVIEWED: </div>
+          <div class="alert alert-secondary text-center mb-0 py-2 fw-bold" role="alert">
+            <i class="bi bi-clipboard-check me-1"></i> REVIEWED:
+          </div>
         </div>
-        <div class="bg-secondary-subtle rounded-3 p-3" id="resolved-requests" style = "height: 700px ;overflow-y: scroll;">
+        <div class="bg-secondary-subtle rounded-3 p-3" id="resolved-requests" style="height:700px;overflow-y:auto;">
         </div>
       </div>
     </div>
