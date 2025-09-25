@@ -50,7 +50,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     } catch (error) {
         console.error("Error loading request details:", error)
-        alert("Could not load request details.")
     }
 
     let isEditing = false

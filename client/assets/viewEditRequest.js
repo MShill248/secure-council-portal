@@ -100,9 +100,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     returnBtn.addEventListener("click", () => {
         window.location.href = "requestdashboard.html";
     });
-})
 
 logout.addEventListener('click', () => {
     localStorage.removeItem('token')
     window.location.assign('index.html')
+})
 })
