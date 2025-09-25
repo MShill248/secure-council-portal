@@ -27,7 +27,7 @@ describe('Request API Endpoints', () => {
     api.close(done)
   })
 
-  describe('GET /request', () => {
+  describe('GET /user', () => {
     it('responds to GET / with a message and a description', async () => {
       const response = await request(api).get('/request')
   
@@ -45,7 +45,7 @@ describe('Request API Endpoints', () => {
     });
   });
 
-  describe('GET /request/user', () => {
+  describe('GET /user', () => {
     const mockToken = jwt.sign({username: "testuser" , userId: 1}, process.env.SECRET_TOKEN, { expiresIn: 3600 })
     beforeEach(() => {
       app.use((req, res, next) => {
@@ -53,9 +53,9 @@ describe('Request API Endpoints', () => {
         next()
       })
     })
-    it('should return all requests with a status code 200', async () => {
+    it('should return all users with a status code 200', async () => {
       
-      const response = await request(api).get('/request/user').set("authorization", mockToken);
+      const response = await request(api).get('/user').set("authorization", mockToken);
 
       expect(response.status).toBe(200);
       expect(response.body).toBeInstanceOf(Array);
@@ -63,24 +63,7 @@ describe('Request API Endpoints', () => {
     });
   });
 
-  describe('GET /request/borough', () => {
-    const mockToken = jwt.sign({username: "testuser" , userId: 1}, process.env.SECRET_TOKEN, { expiresIn: 3600 })
-    beforeEach(() => {
-      app.use((req, res, next) => {
-        req.userId = 1
-        next()
-      })
-    })
-    it('should return all requests with a status code 200', async () => {
-      const response = await request(api).get('/request/borough').set("authorization", mockToken);
-
-      expect(response.status).toBe(200);
-      expect(response.body).toBeInstanceOf(Array);
-      expect(response.body.length).toBeGreaterThan(0);
-    });
-  });
-
-  describe('GET /request/:id', () => {
+  describe('GET /user/:id', () => {
     const mockToken = jwt.sign({username: "alicej" , userId: 1}, process.env.SECRET_TOKEN, { expiresIn: 3600 })
     beforeEach(() => {
       app.use((req, res, next) => {
@@ -89,23 +72,23 @@ describe('Request API Endpoints', () => {
         next()
       })
     })
-    it('should return a specific request by ID', async () => {
-      const requestId = 1;
-      const response = await request(api).get(`/request/${requestId}`).set("authorization", mockToken);
+    it('should return a specific user by ID', async () => {
+      const userId = 1;
+      const response = await request(api).get(`/user/${userId}`).set("authorization", mockToken);
 
       expect(response.status).toBe(200);
-      expect(response.body).toHaveProperty('request_id', requestId);
+      expect(response.body).toHaveProperty('user_id', userId);
     });
 
-    it('should return a 404 if request is not found', async () => {
-      const nonExistentrequestId = 999;
-      const response = await request(api).get(`/requests/${nonExistentrequestId}`);
+    it('should return a 404 if user is not found', async () => {
+      const nonExistentusertId = 999;
+      const response = await request(api).get(`/user/${nonExistentusertId }`);
 
       expect(response.status).toBe(404);
     });
   });
 
-  describe('POST /request', () => {
+  describe('POST /user', () => {
     const mockToken = jwt.sign({username: "alicej" , userId: 1}, process.env.SECRET_TOKEN, { expiresIn: 3600 })
     beforeEach(() => {
       app.use((req, res, next) => {
@@ -114,21 +97,31 @@ describe('Request API Endpoints', () => {
         next()
       })
     })
-    const newrequest = { title: "No bins too!!!", description: "We also have run out of bins",
-      status: "pending", category: "waste-collection", priority: 2, type: "service" };
-    it('should create a new request and return it', async () => {
-      const response = await request(api).post('/request/').set("authorization", mockToken).send(newrequest);
+    const newrequest = {     
+        username: "testuser",
+        first_name: "ted",
+        last_name: "test",
+        email: "test123@test.com",
+        password: "test123",
+        dob: "01-01-1990",
+        address: "1 Test Street",
+        postcode: "SY17 8GH",
+        borough: "idk london",
+        phone_number: "07654 678903",
+        user_role: "developer" 
+    }
+    it('should create a new user and return it', async () => {
+      const response = await request(api).post('/user/').set("authorization", mockToken).send(newrequest);
 
 
       expect(response.status).toBe(201);
-      expect(response.body).toHaveProperty('type', 'service');
-      expect(response.body).toHaveProperty('category', 'waste-collection');
+      expect(response.body).toHaveProperty('username', 'testuser');
     });
 
     it('should return a 400 if required fields are missing', async () => {
-      const incompleterequest = { title: 'No bin' };
+      const incompleterequest = { username: 'No bin' };
       const response = await request(api)
-        .post('/request')
+        .post('/user')
         .set('authorization', mockToken)
         .send(incompleterequest);
 
@@ -136,39 +129,50 @@ describe('Request API Endpoints', () => {
     });
   });
 
-  describe('PATCH /requests/:id', () => {
-    it('should update an existing request and return it', async () => {
-      const requestId = 1;
-      const updatedrequest = { description: 'Please update'};
+  describe('PATCH /user/:id', () => {
+    const mockToken = jwt.sign({username: "alicej" , userId: 1}, process.env.SECRET_TOKEN, { expiresIn: 3600 })
+    beforeEach(() => {
+      app.use((req, res, next) => {
+        req.username = 'alicej',
+        req.userId = 1
+        next()
+      })
+    })
+    it('should update an existing user and return it', async () => {
+      const userId = 1;
+      const updatedrequest = { Borough: 'Greenwich'};
       const response = await request(api)
-        .patch(`/request/${requestId}`)
+        .patch(`/user/update`)
+        .set('authorization', mockToken)
         .send(updatedrequest);
 
       expect(response.status).toBe(200);
-      expect(response.body).toHaveProperty('description', 'Please update');
+      expect(response.body).toHaveProperty('borough', 'Greenwich');
     });
 
     it('should return a 400 if update fails due to missing data', async () => {
       const nonExistentrequestId = 999;
-      const updateData = { description: 'Please update'};
-
-      const response = await request(api).patch(`/request/${nonExistentrequestId}`).send(updateData);;
+      const updateData = { borough: 'Greenwich'};
+      const mockToken = jwt.sign({username: "alicej" , userId: 999}, process.env.SECRET_TOKEN, { expiresIn: 3600 })
+      const response = await request(api).patch(`/user/update`)
+      .set('authorization', mockToken)
+      .send(updateData);;
 
       expect(response.status).toBe(404);
     });
   });
   
-  describe('DELETE /requests/:id', () => {
-    it('should delete a request and return a 204 status code', async () => {
-      const requestId = 1;
-      const response = await request(api).delete(`/request/${requestId}`);
+  describe('DELETE /user/:id', () => {
+    it('should delete a user and return a 204 status code', async () => {
+      const userId = 1;
+      const response = await request(api).delete(`/user/${userId}`);
 
       expect(response.status).toBe(204);
     });
 
-    it('should return a 404 if the request to delete does not exist', async () => {
-      const nonExistentrequestId = 999;
-      const response = await request(api).delete(`/request/${nonExistentrequestId}`);
+    it('should return a 404 if the user to delete does not exist', async () => {
+      const nonExistentuserId = 999;
+      const response = await request(api).delete(`/user/${nonExistentuserId}`);
 
       expect(response.status).toBe(404);
     });
