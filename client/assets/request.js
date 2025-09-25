@@ -1,42 +1,67 @@
-document.querySelector('#request-form').addEventListener('submit', registerEvent)
-const logout = document.querySelector('#logout')
+const form = document.querySelector("#request-form");
+const logout = document.querySelector("#logout");
 
-async function registerEvent(e){
-  
-  e.preventDefault()
+form?.addEventListener("submit", onSubmit);
 
-  const form = new FormData(e.target)
-    
-  const options = {
+async function onSubmit(e) {
+  e.preventDefault();
+
+  // Bootstrap validation: block submit if invalid
+  if (!form.checkValidity()) {
+    e.stopPropagation();
+    form.classList.add("was-validated");
+    return;
+  }
+
+  // Optional: prevent double submit
+  const submitBtn = form.querySelector('button[type="submit"]');
+  submitBtn?.setAttribute("disabled", "disabled");
+
+  try {
+    const fd = new FormData(form);
+
+    const options = {
       method: "POST",
       headers: {
-          "Accept": "application/json",
-          "Content-Type": "application/json",
-          "Authorization": `${localStorage.getItem('token')}`
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `${localStorage.getItem("token")}`,
       },
       body: JSON.stringify({
-          title: form.get('Title'),
-          description: form.get('description'),
-          status: "pending",
-          category: form.get('requestCategory'),
-          priority: "1",
-          type: form.get('requestType')
-      })
-  }
-  console.log(options);
-  const response = await fetch ('http://localhost:3000/request/', options)
-  console.log(response);
-  const data = await response.json()
+        title: fd.get("Title"),
+        description: fd.get("description"),
+        status: "pending",
+        category: fd.get("requestCategory"),
+        priority: "1",
+        type: fd.get("requestType"),
+      }),
+    };
 
-  if (response.status == 201) {
-      window.location.assign("requestdashboard.html")
-  } else {
-      alert(data.error);
-  }
+    const response = await fetch("http://localhost:3000/request/", options);
+    const data = await response.json().catch(() => ({}));
 
+    // Success → go to dashboard
+    if (response.status === 201 || response.ok) {
+      window.location.assign("requestdashboard.html");
+      return;
+    }
+
+    // Failure → show a friendly message
+    const msg =
+      data?.error ||
+      data?.message ||
+      "There was a problem submitting your request. Please try again.";
+    alert(msg);
+  } catch (err) {
+    console.error("Submit failed:", err);
+    alert("Network error. Please try again.");
+  } finally {
+    submitBtn?.removeAttribute("disabled");
+  }
 }
 
-logout.addEventListener('click', () => {
-    localStorage.removeItem('token')
-    window.location.assign('index.html')
-})
+// Logout
+logout?.addEventListener("click", () => {
+  localStorage.removeItem("token");
+  window.location.assign("index.html");
+});

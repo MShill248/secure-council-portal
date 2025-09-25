@@ -30,7 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log("Token saved to localStorage:", localStorage.getItem('token'));
 
         // Redirect after saving
-        alert('Successfully Logged In');
         window.location.assign("maindashboard.html");
       } else {
         alert(data.error || "Login failed: no token received");
@@ -40,4 +39,43 @@ document.addEventListener('DOMContentLoaded', () => {
       alert("Network error: " + err.message);
     }
   });
+
+  const resendLink = document.getElementById('resendOTP');
+  if (resendLink) {
+    resendLink.addEventListener('click', async (e) => {
+      e.preventDefault();
+
+      const username = localStorage.getItem('username');
+      if (!username) {
+        alert('No username found. Please log in again.');
+        return;
+      }
+
+      try {
+        const options = {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ username })
+        };
+
+        const resp = await fetch('http://localhost:3000/auth/sendOtp', options);
+        const data = await resp.json();
+
+        if (!resp.ok) {
+          console.error('Resend OTP error:', data);
+          alert((data && data.error) || 'Failed to resend OTP.');
+          return;
+        }
+
+        alert('A new OTP has been sent to your email.');
+      } catch (err) {
+        console.error('Resend failed:', err);
+        alert('Something went wrong. Please try again.');
+      }
+    });
+  }
+  
 });

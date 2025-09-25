@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const requestId = params.get("id")
 
     let receiver_id
+    let existingMessageId = null
 
     try {
         const options = {
@@ -35,12 +36,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         residentAddress.value = `${user.address}, ${user.postcode}` 
         residentPhone.value = user.phone_number
         requestDescription.textContent = request.description
+        priority.value = request.priority
 
         const messageResponse = await fetch(`http://localhost:3000/message/request/${requestId}`, options)
         console.log(messageResponse);
         if (messageResponse.ok) {
             const messageData = await messageResponse.json()
-            console.log(messageData);
+            existingMessageId = messageData[0].message_id
             councilMessage.value = messageData[0].content || ""
         } else {
             console.error("Failed to fetch council message:", messageResponse.statusText)
@@ -48,7 +50,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     } catch (error) {
         console.error("Error loading request details:", error)
-        alert("Could not load request details.")
     }
 
     let isEditing = false
@@ -71,13 +72,28 @@ document.addEventListener("DOMContentLoaded", async () => {
             receiver_id: receiver_id,
             content: councilMessage.value
             };
-            
+        
             const updatedRequest = {
             priority: priority.value,
             status: resolved.checked ? "resolved": "reviewed"
             };
             try {
-                const postOptions = {
+                if (existingMessageId) {
+                    const patchMessageOptions = {
+                        method: "PATCH",
+                    headers: {
+                        "Accept": "application/json",
+                        "Content-Type": "application/json",
+                        "Authorization": localStorage.getItem("token")
+                    },
+                    body: JSON.stringify(updatedMessage)
+                    }
+                    const patchMessageResponse = await fetch(`http://localhost:3000/message/${existingMessageId}`, patchMessageOptions)
+                    if (!patchMessageResponse.ok) {
+                        throw new Error ("Failed to update message")
+                    }
+                } else {
+                    const postOptions = {
                     method: "POST",
                     headers: {
                         "Accept": "application/json",
@@ -88,6 +104,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
                 const postResponse = await fetch(`http://localhost:3000/message/`, postOptions)
                 if (!postResponse.ok) throw new Error("Failed to update request")
+                }
+                
                 
                 const patchOptions = {
                     method: "PATCH",
@@ -101,7 +119,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const patchResponse = await fetch(`http://localhost:3000/request/${requestId}`, patchOptions)
                 if (!patchResponse.ok) throw new Error("Failed to update request")
 
-                alert("Message sent successfully")
             } catch (err) {
                 console.error("Error saving request:", err)
                 alert("Failed to save request. Please try again.")

@@ -47,5 +47,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         alert("Could not load request details.")
     }
 
-    
+    returnBtn.addEventListener("click", () => {
+        window.location.href = "requestdashboard.html"
+    })
+
 })

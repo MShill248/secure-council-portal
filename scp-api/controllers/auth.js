@@ -126,8 +126,8 @@ async function sendOtp(req, res) {
         await transporter.sendMail({
             from: process.env.EMAIL_USER,
             to: user.email,
-            subject: 'Your SCP OTP for password reset',
-            text: `Your OTP for password reset is: ${otp}. This will expire in 5 minutes.`
+            subject: 'Your new SCP OTP',
+            text: `Your new OTP is: ${otp}. This will expire in 5 minutes.`
         })
 
         res.status(200).json({ success: true, message: 'OTP sent to email.', username: user.username })
@@ -166,10 +166,53 @@ async function verifyPassword(req, res) {
     }
 }
 
+async function sendPdf(req, res) {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ error: "No PDF uploaded" })
+        }
+
+        const { email } = req.body;
+        
+        if (!email) {
+            return res.status(400).json({ error: "Email is required" })
+        }
+
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS
+            },
+            tls: { rejectUnauthorized: false }
+        })
+
+        await transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: "Your Request Details PDF",
+            text: "Attached below is a PDF copy of your request details.",
+            attachments: [
+                {
+                    filename: "request-details.pdf",
+                    content: req.file.buffer
+                }
+            ]
+        })
+
+        res.status(200).json({ success: true, message: "PDF emailed successfully." });
+    } catch (err) {
+        console.error(err)
+        res.status(500).json({ error: "Failed to send PDF" })
+    }
+}
+
 module.exports = {
     register,
     login,
     verifyOtp,
     sendOtp,
-    verifyPassword
+    verifyPassword,
+    sendPdf,
+    otpStore
 };
